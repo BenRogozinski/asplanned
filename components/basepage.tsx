@@ -20,7 +20,7 @@ export default function BasePage({
           <div className={styles.gpainfo}>
             <p>Weighted GPA: 3.7</p>
             <p>Unweighted GPA: 4.0</p>
-          </div>
+          </div>v
           <p>X</p>
           <div className={styles.userinfo}>
             <p>Doe, John</p>
