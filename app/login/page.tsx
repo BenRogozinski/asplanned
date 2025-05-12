@@ -26,7 +26,7 @@ export default function LoginPage() {
       setErrorMessage(null)
       router.push('/')
     } else {
-      const data = await response.json()
+      const data = await response.json() || "Unknown error"
       setErrorMessage(data.error)
     }
   }
