@@ -11,17 +11,21 @@ export default function BasePage({
     <div className={styles.basepage}>
       <div className={styles.navbar}>
         <div className={styles.navbargroup}>
+          <Image
+            className={styles.logo}
+            src="/asplanned-logo.svg"
+            alt="AsPlanned logo"
+            width={100}
+            height={100}
+            priority
+          />
           <p>Classes</p>
           <p>Attendance</p>
           <p>Calendar</p>
           <p>Tools</p>
         </div>
         <div className={styles.navbargroup}>
-          <div className={styles.gpainfo}>
-            <p>Weighted GPA: 3.7</p>
-            <p>Unweighted GPA: 4.0</p>
-          </div>
-          <p>X</p>
+          <p className={styles.notification}>X</p>
           <div className={styles.userinfo}>
             <p>Doe, John</p>
             <Image
@@ -41,6 +45,7 @@ export default function BasePage({
         <p>Footer link 1</p>
         <p>Footer link 2</p>
         <p>Footer link 3</p>
+        <p>Footer link 4</p>
       </div>
     </div>
   );

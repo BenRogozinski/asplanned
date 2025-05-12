@@ -39,7 +39,7 @@ export default function LoginPage() {
           src="/asplanned-logo.svg"
           alt="AsPlanned logo"
           width={150}
-          height={100}
+          height={150}
           priority
         />
 
