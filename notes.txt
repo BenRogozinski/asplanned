@@ -1,0 +1,82 @@
+Stored information:
+
+- User information
+    - ID
+    - Timestamp
+    - UUID (for debugging)
+    - Aspen username
+    - Encrypted Aspen password
+    - Name
+    - School name
+    - Grade level
+    - Profile picture filename
+
+- Class information (per term)
+    - ID
+    - Timestamp
+    - Student ID
+    - Aspen ID (for class sharing)
+    - Class name
+    - Class level (regular, honors, AP, etc.)
+    - Teacher name
+    - Teacher email (for quick emails feature)
+    - Classroom
+
+    NOTES:
+    No grades (will be calculated from other data for better precision)
+
+- Category information (per class)
+    - ID
+    - Timestamp
+    - Student ID
+    - Class ID
+    - Category name
+    - Category weight
+
+- Attendence information (per class)
+    - ID
+    - Timestamp
+    - Student ID
+    - Class ID
+    - Record date
+    - Record code
+
+- Assignment information (per category)
+    - ID
+    - Timestamp
+    - Student ID
+    - Category ID
+    - Assignment name
+    - Assigned date
+    - Due date
+    - Points received
+    - Total possible Points
+    - Class high
+    - Class low
+    - Class median
+    - Class average
+    - Remarks
+
+- Generated report information (per student)
+    - ID
+    - Timestamp
+    - Student ID
+    - Report type
+    - Report filename
+
+
+Features:
+    - Full replacement for Aspen with a clean design
+    - Super precise grade calculator (uses raw assignment point data)
+    - Instant GPA calculator
+    - Report generation (quickly make a PDF or summary page with a LOT of information)
+    - Easy emails (auto fills information for assignments)
+    - Class sharing (send things to people in the same classes)
+    - Assignment impact calculator (instantly check how much an assignment will change your grade)
+    - Personalized improvement plan generator (maybe with AI?)
+    - Everything is cached and constantly updated (site will be insanely fast)
+    - Integration with Aspen's email notification system (speeds up updating a LOT)
+    - Long sessions (won't log you out for a very long time)
+    - Quickly compare assignment grades with the class median and average
+    - Easy to use APIs with good documentation
+    - Ability to delete account data at any time

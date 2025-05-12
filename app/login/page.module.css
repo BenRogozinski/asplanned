@@ -1,0 +1,137 @@
+.page {
+  display: grid;
+  grid-template-rows: 20px 1fr 20px;
+  align-items: center;
+  justify-items: center;
+  min-height: 85svh;
+  padding: 80px;
+  gap: 60px;
+  font-family: var(--font-geist-sans);
+}
+
+.logo {
+  margin: auto;
+}
+
+.title {
+  color: var(--text);
+}
+
+.errorcontainer {
+  margin: 0;
+  display: flex;
+  flex-flow: column;
+  justify-items: center;
+  align-items: center;
+}
+
+.errortext {
+  margin: 0;
+  color: #ff0000;
+}
+
+.loginform {
+  display: flex;
+  flex-flow: column;
+  gap: 10px;
+  justify-items: center;
+  align-items: center;
+}
+
+.loginfield {
+  width: 100%;
+  max-width: 300px;
+  height: 40px;
+}
+
+.input {
+  width: 100%;
+  height: 100%;
+  color: var(--input-text);
+  padding-left: 10px;
+  padding-right: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  outline: none;
+  border: 2px solid var(--input);
+  border-radius: 8px;
+}
+
+.input::placeholder {
+  color: var(--input-text-placeholder);
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.button {
+  width: 60%;
+  height: 40px;
+  margin-top: 15px;
+  outline: none;
+  border: 2px solid var(--background);
+  border-radius: 30px;
+  color: var(--foreground);
+  background-color: var(--background);
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.button:hover {
+  border: 2px solid var(--foreground);
+  filter: invert();
+}
+
+.button:active {
+  transform: scale(90%);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  grid-row-start: 2;
+  padding: 30px;
+  border-radius: 20px;
+  background-color: var(--foreground);
+}
+
+.footer {
+  grid-row-start: 3;
+  display: flex;
+  gap: 24px;
+}
+
+.footer a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer img {
+  flex-shrink: 0;
+}
+
+/* Enable hover only on non-touch devices */
+@media (hover: hover) and (pointer: fine) {
+  .footer a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 32px;
+    padding-bottom: 80px;
+  }
+
+  .main {
+    align-items: center;
+  }
+
+  .footer {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+}
