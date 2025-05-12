@@ -4,7 +4,7 @@ Mimics navigation and form submission
 to use Aspen in a headless context
 */
 
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 import * as cheerio from "cheerio";
@@ -14,11 +14,11 @@ const trimBaseUrl = (url: string) => url.replace(/\/+$/, "");
 const trimPath = (path: string) => "/" + path.replace(/^\/+/, "");
 
 // Function to parse form data from HTML
-function parseForm(response: any): Record<string, string> {
+function parseForm(response: AxiosResponse): Record<string, string> {
   const html = response.data;
   const $ = cheerio.load(html);
 
-  let form: Record<string, string> = {};
+  const form: Record<string, string> = {};
   $("input").each((_, element) => {
     const name = $(element).attr("name");
     const value = $(element).attr("value") || "";
@@ -60,7 +60,7 @@ export class AspenNavigator {
       if (response.request?.res?.responseUrl) {
         this.url = response.request.res.responseUrl;
       }
-    } catch (e) {
+    } catch {
       throw new Error("Error connecting to Aspen");
     }
   }
@@ -81,7 +81,7 @@ export class AspenNavigator {
       if (response.request?.res?.responseUrl) {
         this.url = response.request.res.responseUrl;
       }
-    } catch (e) {
+    } catch {
       throw new Error("Error connecting to Aspen");
     }
   }

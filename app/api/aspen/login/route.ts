@@ -1,4 +1,3 @@
-import { use } from "react";
 import { AspenNavigator } from "../aspen";
 import { z } from "zod";
 
@@ -8,11 +7,11 @@ const LoginSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  let body: any;
+  let body;
 
   try {
     body = await request.json();
-  } catch (error) {
+  } catch  {
     return new Response(
       JSON.stringify({ error: "Invalid JSON payload" }),
       {
