@@ -8,8 +8,10 @@ import React, { FormEvent, useState } from "react";
 export default function LoginPage() {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [throbber, setThrobber] = useState<boolean | null>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    setThrobber(true);
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
@@ -21,6 +23,8 @@ export default function LoginPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
     });
+
+    setThrobber(false);
 
     if (response.ok) {
       setErrorMessage(null);
@@ -69,7 +73,16 @@ export default function LoginPage() {
             />
           </div>
           <button type="submit" className={styles.button}>
-            Log in!
+            <p>Log in!</p>
+            {throbber && (
+              <Image
+                className={styles.throbber}
+                width={20}
+                height={20}
+                src="/loading.svg"
+                alt="Loading"
+              />
+            )}
           </button>
         </form>
       </main>

@@ -1,0 +1,48 @@
+:root {
+    --table-light: #e5e5e5;
+    --table-dark: #c7c7c7;
+}
+
+.gradetable {
+    table-layout: auto;
+    text-align: left;
+    width: 100%;
+    border-spacing: 8px;
+    font-size: 20px;
+    font-weight: 500;
+    border-collapse: separate;
+}
+
+.gradetable thead tr th,
+.gradetable tbody tr td {
+    padding-block: 4px;
+    padding-inline: 8px;
+}
+
+.gradetable tbody tr td:first-child {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.gradetable tbody tr td:last-child {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.gradetable tbody tr:nth-child(even) td {
+    background-color: var(--table-dark);
+}
+
+.gradetable tbody tr:nth-child(odd) td {
+    background-color: var(--table-light);
+}
+
+.gradetable tbody tr td:nth-child(2) {
+    width: 300px;
+}
+
+@media (max-width: 800px) {
+    .gradetable tbody tr td:nth-child(2) {
+        width: 120px;
+    }
+}

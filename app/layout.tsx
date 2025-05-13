@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Home | AsPlanned",
+  title: "AsPlanned",
   description: "AsPlanned: Take charge of your classes!",
 };
 

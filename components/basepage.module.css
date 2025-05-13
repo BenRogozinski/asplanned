@@ -83,6 +83,7 @@
   .basepage {
     display: flex;
     gap: 5px;
+    padding: 0px;
   }
 
   .notification {
@@ -94,6 +95,7 @@
     flex-flow: column;
     gap: 20px;
     padding-block: 10px;
+    border-radius: 0px 0px 20px 20px;
   }
 
   .navbargroup {

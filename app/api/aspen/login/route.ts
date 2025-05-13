@@ -70,6 +70,7 @@ export async function POST(request: Request) {
     for (const cookie of aspenCookies) {
       cookie.key = `ASPEN_${cookie.key}`;
       cookie.path = "/";
+      cookie.secure = false;
       headers.append("Set-Cookie", cookie.toString());
     }
 

@@ -16,6 +16,8 @@ export default async function BasePage({
   const aspenDeploymentId = cookieStore.get("ASPEN_deploymentId")?.value || null;
   const aspenJSSESSIONID = cookieStore.get("ASPEN_JSESSIONID")?.value || null;
 
+  console.log(aspenCookieCORS, aspenCookie, aspenDeploymentId, aspenJSSESSIONID);
+
   if (!aspenCookieCORS || !aspenCookie || !aspenDeploymentId || !aspenJSSESSIONID) {
     return <LoginPage />;
   }
