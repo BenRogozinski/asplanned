@@ -13,16 +13,21 @@
     "axios-cookiejar-support": "^6.0.2",
     "cheerio": "^1.0.0",
     "express-validator": "^7.2.1",
+    "js-cookie": "^3.0.5",
     "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-native-sqlite-storage": "^6.0.1",
     "tough-cookie": "^5.1.2",
+    "uuid": "^11.1.0",
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/react-native-sqlite-storage": "^6.0.5",
     "eslint": "9.26.0",
     "eslint-config-next": "15.3.2",
     "typescript": "^5"

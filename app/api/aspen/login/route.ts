@@ -1,8 +1,6 @@
 import { AspenNavigator } from "../aspen";
 import { z } from "zod";
 
-export const runtime = 'edge';
-
 const LoginSchema = z.object({
   username: z.string().min(1).max(255),
   password: z.string().min(1).max(255),
@@ -71,6 +69,7 @@ export async function POST(request: Request) {
     const aspenCookies = await aspen.getCookies();
     for (const cookie of aspenCookies) {
       cookie.key = `ASPEN_${cookie.key}`;
+      cookie.path = "/";
       headers.append("Set-Cookie", cookie.toString());
     }
 

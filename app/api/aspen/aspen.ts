@@ -30,6 +30,14 @@ function parseForm(response: AxiosResponse): Record<string, string> {
   return form;
 }
 
+// Error class for Authentication errors
+class AspenAuthenticationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "AspenAuthenticationError";
+  }
+}
+
 // Main Aspen navigator class
 export class AspenNavigator {
   public base_url: string;
@@ -54,14 +62,28 @@ export class AspenNavigator {
 
     try {
       const response = await this.client.get(this.url, { maxRedirects: 5 });
+
+      if (response.status === 404) {
+        throw new AspenAuthenticationError("404 Not Found: Unable to navigate to the specified path.");
+      }
+
       this.form = parseForm(response);
 
       // Update URL after any redirect
       if (response.request?.res?.responseUrl) {
         this.url = response.request.res.responseUrl;
       }
-    } catch {
-      throw new Error("Error connecting to Aspen");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          throw new AspenAuthenticationError("404 Not Found: Unable to navigate to the specified path.");
+        }
+        throw new Error(`Axios error: ${error.message}`);
+      } else if (error instanceof Error) {
+        throw new Error(`Unexpected error: ${error.message}`);
+      } else {
+        throw new Error("Unknown error occurred while navigating.");
+      }
     }
   }
 
@@ -75,14 +97,27 @@ export class AspenNavigator {
         maxRedirects: 5
       });
 
+      if (response.status === 404) {
+        throw new AspenAuthenticationError("404 Not Found: Unable to submit the form.");
+      }
+
       this.form = parseForm(response);
 
       // Update URL after any redirect
       if (response.request?.res?.responseUrl) {
         this.url = response.request.res.responseUrl;
       }
-    } catch {
-      throw new Error("Error connecting to Aspen");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          throw new AspenAuthenticationError("404 Not Found: Unable to submit the form.");
+        }
+        throw new Error(`Axios error: ${error.message}`);
+      } else if (error instanceof Error) {
+        throw new Error(`Unexpected error: ${error.message}`);
+      } else {
+        throw new Error("Unknown error occurred while submitting the form.");
+      }
     }
   }
 
