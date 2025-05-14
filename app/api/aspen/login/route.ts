@@ -1,6 +1,7 @@
 import { Cookie } from "tough-cookie";
 import { AspenNavigator } from "../../../../lib/aspen";
 import { z } from "zod";
+import { newSession } from "@/lib/session";
 
 const LoginSchema = z.object({
   username: z.string().min(1).max(255),
@@ -10,91 +11,79 @@ const LoginSchema = z.object({
 export async function POST(request: Request) {
   let body;
 
+  // Parse the request body
   try {
     body = await request.json();
-  } catch  {
-    return new Response(
-      JSON.stringify({ error: "Invalid JSON payload" }),
-      {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+  } catch {
+    return jsonResponse({ error: "Invalid JSON payload" }, 400);
   }
 
+  // Validate the request body
   const result = LoginSchema.safeParse(body);
-
   if (!result.success) {
-    return new Response(
-      JSON.stringify({ error: "Malformed request" }),
-      {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return jsonResponse({ error: "Malformed request" }, 401);
   }
 
   const { username, password } = result.data;
-
   const aspen = new AspenNavigator(process.env.ASPEN_BASE_URL || "https://aspen.cps.edu/aspen");
 
+  // Attempt login
   try {
     await aspen.navigate("/logon.do");
     aspen.setField("username", username);
     aspen.setField("password", password);
     await aspen.submit();
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      return new Response(
-        JSON.stringify({ error: e.message }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-    } else {
-      return new Response(
-        JSON.stringify({ error: "Internal processing error" }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-    }
+  } catch (e) {
+    return handleError(e);
   }
 
+  // Check if login was successful
   if (aspen.url.endsWith("/home.do")) {
-    aspen.navigate("/home.do");
-
-    const headers = new Headers();
-    headers.set("Content-Type", "application/json");
-
-    const aspenCookies = await aspen.getCookies();
-    for (const cookie of aspenCookies) {
-      cookie.key = `ASPEN_${cookie.key}`;
-      cookie.path = "/";
-      cookie.secure = false;
-      headers.append("Set-Cookie", cookie.toString());
-    }
-
-    const taglibTokenCookie = new Cookie;
-    taglibTokenCookie.key = "ASPEN_taglib";
-    taglibTokenCookie.path = "/";
-    taglibTokenCookie.secure = false;
-    taglibTokenCookie.value = aspen.form["org.apache.struts.taglib.html.TOKEN"];
-    headers.append("Set-Cookie", taglibTokenCookie.toString());
-
-    return new Response(null, {
-      status: 200,
-      headers,
-    });
+    return handleSuccessfulLogin(aspen);
   } else {
-    return new Response(
-      JSON.stringify({ error: "Authentication failed" }),
-      {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return jsonResponse({ error: "Authentication failed" }, 401);
   }
+}
+
+// Helper function to handle successful login
+async function handleSuccessfulLogin(aspen: AspenNavigator): Promise<Response> {
+  await aspen.navigate("/home.do");
+
+  const headers = new Headers();
+  headers.set("Content-Type", "application/json");
+
+  const aspenCookies = await aspen.getCookies();
+  const cookies: Record<string, string> = {};
+  for (const cookie of aspenCookies) {
+    cookies[cookie.key] = cookie.value;
+  }
+
+  const asplannedTokenCookie = new Cookie();
+  asplannedTokenCookie.key = "AsplannedToken";
+  asplannedTokenCookie.path = "/";
+  asplannedTokenCookie.secure = false;
+  asplannedTokenCookie.value = newSession(
+    cookies.AspenCookie || "",
+    cookies.JSSESSIONID || "",
+    aspen.form["org.apache.struts.taglib.html.TOKEN"] || ""
+  );
+  headers.append("Set-Cookie", asplannedTokenCookie.toString());
+
+  return new Response(null, { status: 200, headers });
+}
+
+// Helper function to handle errors
+function handleError(e: unknown): Response {
+  if (e instanceof Error) {
+    return jsonResponse({ error: e.message }, 500);
+  }
+  return jsonResponse({ error: "Internal processing error" }, 500);
+}
+
+// Helper function to create JSON responses
+function jsonResponse(data: Record<string, unknown>, status: number): Response {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
 }

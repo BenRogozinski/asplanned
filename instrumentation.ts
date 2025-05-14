@@ -1,5 +1,4 @@
 import sqlite3 from "sqlite3";
-import { newSession, getSession } from "./lib/session";
 
 export async function register() {
   const db = new sqlite3.Database(
@@ -9,7 +8,7 @@ export async function register() {
       if (err) {
         throw new Error("Failed to initialize session database");
       }
-      console.log("Created in-memory sqlite3 database");
+      console.log("Initialized sessions database");
     }
   );
 

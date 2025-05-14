@@ -1,7 +1,7 @@
 /*
-Aspen navigator
+Aspen Navigator
 Mimics navigation and form submission
-to use Aspen in a headless context
+to use Aspen in a headless context.
 */
 
 import axios, { AxiosResponse } from "axios";
@@ -35,7 +35,7 @@ class AspenAuthenticationError extends Error {
   }
 }
 
-// Main Aspen navigator class
+// Main Aspen Navigator class
 export class AspenNavigator {
   public base_url: string;
   public url: string;
