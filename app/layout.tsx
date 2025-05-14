@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import LoginPage from "@/components/login";
-import { newSession, getSession } from "@/lib/session";
+import { getSession } from "@/lib/session";
 import { cookies } from "next/headers";
 import "./globals.css";
-import { cookie } from "express-validator";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AsPlanned",
+  title: { default: "AsPlanned", template: "%s | AsPlanned"},
   description: "AsPlanned: Take charge of your classes!",
 };
 
