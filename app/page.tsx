@@ -1,10 +1,11 @@
 import BasePage from "@/components/basepage";
 import styles from "./page.module.css";
 
-export default function Home() {
+export default async function Home() {
   return (
     <BasePage>
-    <table className={styles.gradetable}>
+      <h1>Classes</h1>
+      <table className={styles.gradetable}>
       <thead>
         <tr>
           <th>Class</th>
@@ -29,7 +30,7 @@ export default function Home() {
           <td>47.61 (F)</td>
         </tr>
         <tr>
-          <td>Class 4</td>
+          <td>Class 5</td>
           <td>64.75 (D)</td>
         </tr>
       </tbody>

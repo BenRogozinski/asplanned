@@ -6,31 +6,28 @@ to use Aspen in a headless context
 
 import axios, { AxiosResponse } from "axios";
 import { wrapper } from "axios-cookiejar-support";
-import { CookieJar } from "tough-cookie";
+import { Cookie, CookieJar } from "tough-cookie";
 import * as cheerio from "cheerio";
 
 // Utility functions to clean paths
-const trimBaseUrl = (url: string) => url.replace(/\/+$/, "");
-const trimPath = (path: string) => "/" + path.replace(/^\/+/, "");
+const trimBaseUrl = (url: string): string => url.replace(/\/+$/, "");
+const trimPath = (path: string): string => `/${path.replace(/^\/+/, "")}`;
 
 // Function to parse form data from HTML
-function parseForm(response: AxiosResponse): Record<string, string> {
-  const html = response.data;
-  const $ = cheerio.load(html);
-
+function parsePage(response: AxiosResponse): { form: Record<string, string>; dom: cheerio.CheerioAPI } {
+  const $ = cheerio.load(response.data);
   const form: Record<string, string> = {};
+
   $("input").each((_, element) => {
     const name = $(element).attr("name");
     const value = $(element).attr("value") || "";
-    if (name) {
-      form[name] = value;
-    }
+    if (name) form[name] = value;
   });
 
-  return form;
+  return { form, dom: $ };
 }
 
-// Error class for Authentication errors
+// Error class for authentication errors
 class AspenAuthenticationError extends Error {
   constructor(message: string) {
     super(message);
@@ -44,21 +41,21 @@ export class AspenNavigator {
   public url: string;
   public form: Record<string, string>;
   public jar: CookieJar;
+  public dom: cheerio.CheerioAPI | null;
   private client: ReturnType<typeof wrapper>;
 
-  constructor(base_url: string) {
+  constructor(base_url: string, jar?: CookieJar) {
     this.base_url = trimBaseUrl(base_url);
     this.url = this.base_url;
     this.form = {};
-
-    this.jar = new CookieJar();
+    this.dom = null;
+    this.jar = jar || new CookieJar();
     this.client = wrapper(axios.create({ jar: this.jar, withCredentials: true }));
   }
 
   // Load page, parse form, save cookies
-  async navigate(path: string) {
-    const trimmedPath = trimPath(path);
-    this.url = this.base_url + trimmedPath;
+  async navigate(path: string): Promise<void> {
+    this.url = this.base_url + trimPath(path);
 
     try {
       const response = await this.client.get(this.url, { maxRedirects: 5 });
@@ -67,66 +64,65 @@ export class AspenNavigator {
         throw new AspenAuthenticationError("404 Not Found: Unable to navigate to the specified path.");
       }
 
-      this.form = parseForm(response);
+      ({ form: this.form, dom: this.dom } = parsePage(response));
 
       // Update URL after any redirect
       if (response.request?.res?.responseUrl) {
         this.url = response.request.res.responseUrl;
       }
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 404) {
-          throw new AspenAuthenticationError("404 Not Found: Unable to navigate to the specified path.");
-        }
-        throw new Error(`Axios error: ${error.message}`);
-      } else if (error instanceof Error) {
-        throw new Error(`Unexpected error: ${error.message}`);
-      } else {
-        throw new Error("Unknown error occurred while navigating.");
-      }
+      this.handleError(error, "navigate");
     }
   }
 
   // Submit form and parse result
-  async submit() {
+  async submit(): Promise<void> {
     try {
-      const response = await this.client.post(this.url, new URLSearchParams(this.form).toString(), {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        maxRedirects: 5
-      });
+      const response = await this.client.post(
+        this.url,
+        new URLSearchParams(this.form).toString(),
+        {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          maxRedirects: 5,
+        }
+      );
 
       if (response.status === 404) {
         throw new AspenAuthenticationError("404 Not Found: Unable to submit the form.");
       }
 
-      this.form = parseForm(response);
+      ({ form: this.form, dom: this.dom } = parsePage(response));
 
       // Update URL after any redirect
       if (response.request?.res?.responseUrl) {
         this.url = response.request.res.responseUrl;
       }
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 404) {
-          throw new AspenAuthenticationError("404 Not Found: Unable to submit the form.");
-        }
-        throw new Error(`Axios error: ${error.message}`);
-      } else if (error instanceof Error) {
-        throw new Error(`Unexpected error: ${error.message}`);
-      } else {
-        throw new Error("Unknown error occurred while submitting the form.");
-      }
+      this.handleError(error, "submit");
     }
   }
 
   // Modify form values
-  setField(name: string, value: string) {
+  setField(name: string, value: string): void {
     this.form[name] = value;
   }
 
-  async getCookies() {
+  // Retrieve cookies
+  async getCookies(): Promise<Cookie[]> {
     return this.jar.getCookies(this.url);
+  }
+
+  // Handle errors
+  private handleError(error: unknown, action: string): void {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 404) {
+        throw new AspenAuthenticationError(`404 Not Found: Unable to ${action}.`);
+      }
+      throw new Error(`Axios error during ${action}: ${error.message}`);
+    } else if (error instanceof Error) {
+      throw new Error(`Unexpected error during ${action}: ${error.message}`);
+    } else {
+      throw new Error(`Unknown error occurred during ${action}.`);
+    }
   }
 }

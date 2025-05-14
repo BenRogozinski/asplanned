@@ -18,6 +18,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-native-sqlite-storage": "^6.0.1",
+    "sqlite3": "^5.1.7",
     "tough-cookie": "^5.1.2",
     "uuid": "^11.1.0",
     "zod": "^3.24.4"

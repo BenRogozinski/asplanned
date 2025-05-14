@@ -2,26 +2,12 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from "./basepage.module.css";
-import LoginPage from './login';
-import { cookies } from 'next/headers';
 
 export default async function BasePage({
   children,
 }: Readonly<{
-  children?: React.ReactNode; // Made children optional
+  children?: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const aspenCookieCORS = cookieStore.get("ASPEN_AspenCookieCORS")?.value || null;
-  const aspenCookie = cookieStore.get("ASPEN_AspenCookie")?.value || null;
-  const aspenDeploymentId = cookieStore.get("ASPEN_deploymentId")?.value || null;
-  const aspenJSSESSIONID = cookieStore.get("ASPEN_JSESSIONID")?.value || null;
-
-  console.log(aspenCookieCORS, aspenCookie, aspenDeploymentId, aspenJSSESSIONID);
-
-  if (!aspenCookieCORS || !aspenCookie || !aspenDeploymentId || !aspenJSSESSIONID) {
-    return <LoginPage />;
-  }
-
   return (
     <div className={styles.basepage}>
       <div className={styles.navbar}>
@@ -37,7 +23,6 @@ export default async function BasePage({
               />
             </div>
           </Link>
-          <Link href="/classes" className={styles.navbarlink}>Classes</Link>
           <Link href="/attendance" className={styles.navbarlink}>Attendance</Link>
           <Link href="/calendar" className={styles.navbarlink}>Calendar</Link>
           <Link href="/tools" className={styles.navbarlink}>Tools</Link>

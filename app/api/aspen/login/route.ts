@@ -1,4 +1,5 @@
-import { AspenNavigator } from "../aspen";
+import { Cookie } from "tough-cookie";
+import { AspenNavigator } from "../../../../lib/aspen";
 import { z } from "zod";
 
 const LoginSchema = z.object({
@@ -63,6 +64,8 @@ export async function POST(request: Request) {
   }
 
   if (aspen.url.endsWith("/home.do")) {
+    aspen.navigate("/home.do");
+
     const headers = new Headers();
     headers.set("Content-Type", "application/json");
 
@@ -73,6 +76,13 @@ export async function POST(request: Request) {
       cookie.secure = false;
       headers.append("Set-Cookie", cookie.toString());
     }
+
+    const taglibTokenCookie = new Cookie;
+    taglibTokenCookie.key = "ASPEN_taglib";
+    taglibTokenCookie.path = "/";
+    taglibTokenCookie.secure = false;
+    taglibTokenCookie.value = aspen.form["org.apache.struts.taglib.html.TOKEN"];
+    headers.append("Set-Cookie", taglibTokenCookie.toString());
 
     return new Response(null, {
       status: 200,
