@@ -1,8 +1,3 @@
-:root {
-    --table-light: #e5e5e5;
-    --table-dark: #c7c7c7;
-}
-
 .gradetable {
     table-layout: auto;
     text-align: left;

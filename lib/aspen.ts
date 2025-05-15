@@ -4,8 +4,6 @@ Mimics navigation and form submission
 to use Aspen in a headless context.
 */
 
-import axios, { AxiosResponse } from "axios";
-import { wrapper } from "axios-cookiejar-support";
 import { Cookie, CookieJar } from "tough-cookie";
 import * as cheerio from "cheerio";
 import { AspenSession } from "./session";
@@ -14,8 +12,8 @@ import { AspenSession } from "./session";
 const trimPath = (path: string): string => `/${path.replace(/^\/+/, "")}`;
 
 // Function to parse form data from HTML
-function parsePage(response: AxiosResponse): { form: Record<string, string>; dom: cheerio.CheerioAPI } {
-  const $ = cheerio.load(response.data);
+function parsePage(responseText: string): { form: Record<string, string>; dom: cheerio.CheerioAPI } {
+  const $ = cheerio.load(responseText);
   const form: Record<string, string> = {};
 
   $("input").each((_, element) => {
@@ -42,7 +40,6 @@ export class AspenNavigator {
   public form: Record<string, string>;
   public jar: CookieJar;
   public dom: cheerio.CheerioAPI | null;
-  private client: ReturnType<typeof wrapper>;
 
   constructor(jar: CookieJar = new CookieJar()) {
     this.base_url = "https://aspen.cps.edu/aspen";
@@ -50,7 +47,6 @@ export class AspenNavigator {
     this.form = {};
     this.dom = null;
     this.jar = jar;
-    this.client = wrapper(axios.create({ jar: this.jar, withCredentials: true }));
   }
 
   // Load page, parse form, save cookies
@@ -58,16 +54,20 @@ export class AspenNavigator {
     this.url = this.base_url + trimPath(path);
 
     try {
-      const response = await this.client.get(this.url, { maxRedirects: 5 });
+      const response = await this.fetchWithCookies(this.url, {
+        method: "GET",
+        redirect: "follow",
+      });
 
       if (response.status === 404) {
         throw new AspenAuthenticationError("404 Not Found: Unable to navigate to the specified path.");
       }
 
-      ({ form: this.form, dom: this.dom } = parsePage(response));
+      const responseText = await response.text();
+      ({ form: this.form, dom: this.dom } = parsePage(responseText));
 
       // Update URL after any redirect
-      this.url = response.request?.res?.responseUrl || this.url;
+      this.url = response.url || this.url;
     } catch (error) {
       this.handleError(error, "navigate");
     }
@@ -76,23 +76,24 @@ export class AspenNavigator {
   // Submit form and parse result
   async submit(): Promise<void> {
     try {
-      const response = await this.client.post(
-        this.url,
-        new URLSearchParams(this.form).toString(),
-        {
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          maxRedirects: 5,
-        }
-      );
+      const response = await this.fetchWithCookies(this.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams(this.form).toString(),
+        redirect: "follow",
+      });
 
       if (response.status === 404) {
         throw new AspenAuthenticationError("404 Not Found: Unable to submit the form.");
       }
 
-      ({ form: this.form, dom: this.dom } = parsePage(response));
+      const responseText = await response.text();
+      ({ form: this.form, dom: this.dom } = parsePage(responseText));
 
       // Update URL after any redirect
-      this.url = response.request?.res?.responseUrl || this.url;
+      this.url = response.url || this.url;
     } catch (error) {
       this.handleError(error, "submit");
     }
@@ -108,16 +109,33 @@ export class AspenNavigator {
     return this.jar.getCookies(this.url);
   }
 
-  // Handle errors
-  private handleError(error: unknown, action: string): void {
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      if (status === 404) {
-        throw new AspenAuthenticationError(`404 Not Found: Unable to ${action}.`);
-      }
-      throw new Error(`Axios error during ${action}: ${error.message}`);
+  // Generate Cookie header string
+  private async getCookieHeader(): Promise<string> {
+    const cookies = await this.getCookies();
+    return cookies.map((cookie) => `${cookie.key}=${cookie.value}`).join("; ");
+  }
+
+  // Fetch with cookies
+  private async fetchWithCookies(url: string, options: RequestInit): Promise<Response> {
+    const cookieHeader = await this.getCookieHeader();
+    const headers = new Headers(options.headers);
+    headers.set("Cookie", cookieHeader);
+
+    const response = await fetch(url, { ...options, headers });
+
+    // Save cookies from the response
+    const setCookieHeaders = response.headers.get("set-cookie");
+    if (setCookieHeaders) {
+      await Promise.all(
+        setCookieHeaders.split(",").map((cookie) => this.jar.setCookie(cookie, url))
+      );
     }
 
+    return response;
+  }
+
+  // Handle errors
+  private handleError(error: unknown, action: string): void {
     if (error instanceof Error) {
       throw new Error(`Unexpected error during ${action}: ${error.message}`);
     }
