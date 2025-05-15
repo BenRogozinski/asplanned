@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   }
 
   const { username, password } = result.data;
-  const aspen = new AspenNavigator(process.env.ASPEN_BASE_URL || "https://aspen.cps.edu/aspen");
+  const aspen = new AspenNavigator();
 
   // Attempt login
   try {
@@ -47,8 +47,6 @@ export async function POST(request: Request) {
 
 // Helper function to handle successful login
 async function handleSuccessfulLogin(aspen: AspenNavigator): Promise<Response> {
-  await aspen.navigate("/home.do");
-
   const headers = new Headers();
   headers.set("Content-Type", "application/json");
 
@@ -58,13 +56,15 @@ async function handleSuccessfulLogin(aspen: AspenNavigator): Promise<Response> {
     cookies[cookie.key] = cookie.value;
   }
 
+  await aspen.navigate("/home.do");
+
   const asplannedTokenCookie = new Cookie();
   asplannedTokenCookie.key = "AsplannedToken";
   asplannedTokenCookie.path = "/";
   asplannedTokenCookie.secure = false;
   asplannedTokenCookie.value = newSession(
     cookies.AspenCookie || "",
-    cookies.JSSESSIONID || "",
+    cookies.JSESSIONID || "",
     aspen.form["org.apache.struts.taglib.html.TOKEN"] || ""
   );
   headers.append("Set-Cookie", asplannedTokenCookie.toString());

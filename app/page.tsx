@@ -1,40 +1,59 @@
 import BasePage from "@/components/basepage";
 import styles from "./page.module.css";
+import { getNavigator } from "@/lib/aspen";
+import { getSession } from "@/lib/session";
+import trim from "@/lib/trim";
+import LoginPage from "@/components/login";
+import * as cheerio from "cheerio";
+import React from "react";
 
 export default async function Home() {
-  return (
-    <BasePage>
-      <h1>Classes</h1>
-      <table className={styles.gradetable}>
-      <thead>
-        <tr>
-          <th>Class</th>
-          <th>Grade</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Class 1</td>
-          <td>76.24 (C)</td>
-        </tr>
-        <tr>
-          <td>Class 2</td>
-          <td>81.23 (B)</td>
-        </tr>
-        <tr>
-          <td>Class 3</td>
-          <td>100.00 (A)</td>
-        </tr>
-        <tr>
-          <td>Class 4</td>
-          <td>47.61 (F)</td>
-        </tr>
-        <tr>
-          <td>Class 5</td>
-          <td>64.75 (D)</td>
-        </tr>
-      </tbody>
-    </table>
-    </BasePage>
-  );
+  try {
+    const session = await getSession();
+    if (session) {
+      const aspen = await getNavigator(session);
+      await aspen.navigate("/portalClassList.do?navkey=academics.classes.list");
+      const $ = aspen.dom;
+
+      if (!$) {
+        throw new Error("Failed to load DOM from Aspen.");
+      }
+
+      const classRows: React.ReactNode[] = [];
+      $(".listCell.listRowHeight").each((index, element) => {
+        const row = cheerio.load(element);
+        classRows.push(
+          <tr key={index} data-aspen-id={row("td:nth-child(2)").attr("id")}>
+            <td>{trim(row("td:nth-child(2)").text())}</td>
+            <td>{trim(row("td:nth-child(8)").text()) || "N/A"}</td>
+          </tr>
+        );
+      });
+
+      return (
+        <BasePage>
+          <h1>Classes</h1>
+          <table className={styles.gradetable}>
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Grade</th>
+              </tr>
+            </thead>
+            <tbody>{classRows}</tbody>
+          </table>
+        </BasePage>
+      );
+    } else {
+      return <LoginPage />;
+    }
+  } catch (error) {
+    console.error("Error loading classes:", error);
+    return (
+      <BasePage>
+        <h1>Error</h1>
+        <p>There was an issue loading your classes. Please try again later.</p>
+      </BasePage>
+    );
+  }
 }

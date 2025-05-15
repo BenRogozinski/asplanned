@@ -8,9 +8,9 @@ import axios, { AxiosResponse } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { Cookie, CookieJar } from "tough-cookie";
 import * as cheerio from "cheerio";
+import { AspenSession } from "./session";
 
 // Utility functions to clean paths
-const trimBaseUrl = (url: string): string => url.replace(/\/+$/, "");
 const trimPath = (path: string): string => `/${path.replace(/^\/+/, "")}`;
 
 // Function to parse form data from HTML
@@ -27,7 +27,7 @@ function parsePage(response: AxiosResponse): { form: Record<string, string>; dom
   return { form, dom: $ };
 }
 
-// Error class for authentication errors
+// Custom error class for authentication errors
 class AspenAuthenticationError extends Error {
   constructor(message: string) {
     super(message);
@@ -44,12 +44,12 @@ export class AspenNavigator {
   public dom: cheerio.CheerioAPI | null;
   private client: ReturnType<typeof wrapper>;
 
-  constructor(base_url: string, jar?: CookieJar) {
-    this.base_url = trimBaseUrl(base_url);
+  constructor(jar: CookieJar = new CookieJar()) {
+    this.base_url = "https://aspen.cps.edu/aspen";
     this.url = this.base_url;
     this.form = {};
     this.dom = null;
-    this.jar = jar || new CookieJar();
+    this.jar = jar;
     this.client = wrapper(axios.create({ jar: this.jar, withCredentials: true }));
   }
 
@@ -67,10 +67,8 @@ export class AspenNavigator {
       ({ form: this.form, dom: this.dom } = parsePage(response));
 
       // Update URL after any redirect
-      if (response.request?.res?.responseUrl) {
-        this.url = response.request.res.responseUrl;
-      }
-    } catch (error: unknown) {
+      this.url = response.request?.res?.responseUrl || this.url;
+    } catch (error) {
       this.handleError(error, "navigate");
     }
   }
@@ -94,10 +92,8 @@ export class AspenNavigator {
       ({ form: this.form, dom: this.dom } = parsePage(response));
 
       // Update URL after any redirect
-      if (response.request?.res?.responseUrl) {
-        this.url = response.request.res.responseUrl;
-      }
-    } catch (error: unknown) {
+      this.url = response.request?.res?.responseUrl || this.url;
+    } catch (error) {
       this.handleError(error, "submit");
     }
   }
@@ -115,14 +111,38 @@ export class AspenNavigator {
   // Handle errors
   private handleError(error: unknown, action: string): void {
     if (axios.isAxiosError(error)) {
-      if (error.response?.status === 404) {
+      const status = error.response?.status;
+      if (status === 404) {
         throw new AspenAuthenticationError(`404 Not Found: Unable to ${action}.`);
       }
       throw new Error(`Axios error during ${action}: ${error.message}`);
-    } else if (error instanceof Error) {
-      throw new Error(`Unexpected error during ${action}: ${error.message}`);
-    } else {
-      throw new Error(`Unknown error occurred during ${action}.`);
     }
+
+    if (error instanceof Error) {
+      throw new Error(`Unexpected error during ${action}: ${error.message}`);
+    }
+
+    throw new Error(`Unknown error occurred during ${action}.`);
   }
+}
+
+// Function to initialize and return an AspenNavigator instance
+export async function getNavigator(session: AspenSession | null): Promise<AspenNavigator> {
+  if (!session) {
+    throw new AspenAuthenticationError("Session invalid");
+  }
+
+  const jar = new CookieJar();
+  const baseUrl = "https://aspen.cps.edu/";
+
+  await jar.setCookie(`AspenCookie=${session.aspenCookie}`, baseUrl);
+  await jar.setCookie(`AspenCookieCORS=${session.aspenCookie}`, baseUrl);
+  await jar.setCookie("deploymentId=aspen", `${baseUrl}aspen`);
+  await jar.setCookie(`JSESSIONID=${session.aspenSessionId}`, `${baseUrl}aspen`);
+
+  const nav = new AspenNavigator(jar);
+
+  nav.setField("org.apache.struts.taglib.html.TOKEN", session.aspenTaglib);
+
+  return nav;
 }

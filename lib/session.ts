@@ -1,5 +1,6 @@
 import sqlite3 from "sqlite3";
 import crypto from "crypto"; // Ensure this is imported for `crypto.randomUUID`
+import { cookies } from "next/headers";
 
 class SessionError extends Error {
   constructor(message: string) {
@@ -47,7 +48,10 @@ export type AspenSession = {
   aspenTaglib: string;
 };
 
-export async function getSession(token: string): Promise<AspenSession | null> {
+export async function getSession(): Promise<AspenSession | null> {
+  const cookieJar = await cookies();
+  const token = cookieJar.get("AsplannedToken")?.value || "";
+
   return new Promise((resolve, reject) => {
     const db = new sqlite3.Database("./sessions.db", sqlite3.OPEN_READWRITE, (err) => {
       if (err) {

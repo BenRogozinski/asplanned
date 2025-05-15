@@ -27,7 +27,7 @@ export default async function RootLayout({
 }>) {
   const cookieJar = await cookies();
   const token = cookieJar.get("AsplannedToken")?.value || "";
-  if (!(token && await getSession(token))) {
+  if (!(token && await getSession())) {
     return (
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
