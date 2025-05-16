@@ -1,3 +1,4 @@
+import { createClient } from "@libsql/client";
 import { cookies } from "next/headers";
 
 class SessionError extends Error {
@@ -7,24 +8,18 @@ class SessionError extends Error {
   }
 }
 
-const API_PROXY_URL = `${process.env.BASE_URL || "http://localhost:3000"}/api/mongodb-proxy`;
+const TURSO_URL = process.env.TURSO_URL || ""; // Turso database URL
+const TURSO_AUTH_TOKEN = process.env.TURSO_AUTH_TOKEN || ""; // Turso database auth token
 
-// Helper function to call the serverless API
-async function callMongoDBProxy(action: string, data: Record<string, unknown>) {
-  const response = await fetch(API_PROXY_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ action, data }),
-  });
-
-  if (!response.ok) {
-    throw new SessionError(`MongoDB Proxy request failed: ${response.statusText}`);
-  }
-
-  return response.json();
+if (!TURSO_URL || !TURSO_AUTH_TOKEN) {
+  throw new Error("Please define the TURSO_URL and TURSO_AUTH_TOKEN environment variables");
 }
+
+// Create a libSQL client
+const client = createClient({
+  url: TURSO_URL,
+  authToken: TURSO_AUTH_TOKEN,
+});
 
 // Create a new session
 export async function newSession(aspenCookie: string, aspenSessionId: string, aspenTaglib: string): Promise<string> {
@@ -32,14 +27,9 @@ export async function newSession(aspenCookie: string, aspenSessionId: string, as
     const token = crypto.randomUUID();
     const createdAt = Date.now();
 
-    await callMongoDBProxy("insertOne", {
-      document: {
-        token,
-        aspen_cookie: aspenCookie,
-        aspen_session_id: aspenSessionId,
-        aspen_taglib: aspenTaglib,
-        created_at: createdAt,
-      },
+    await client.execute({
+      sql: `INSERT INTO sessions (token, aspen_cookie, aspen_session_id, aspen_taglib, created_at) VALUES (?, ?, ?, ?, ?)`,
+      args: [token, aspenCookie, aspenSessionId, aspenTaglib, createdAt],
     });
 
     return token;
@@ -58,21 +48,22 @@ export async function getSession(): Promise<AspenSession | null> {
   }
 
   try {
-    const result = await callMongoDBProxy("findOne", {
-      filter: { token },
+    const result = await client.execute({
+      sql: `SELECT aspen_cookie, aspen_session_id, aspen_taglib, created_at FROM sessions WHERE token = ?`,
+      args: [token],
     });
 
-    const row = result.result;
+    const row = result.rows[0];
 
     if (row) {
-      const sessionAge = Date.now() - row.created_at;
+      const sessionAge = Date.now() - Number(row.created_at);
       const sessionValid = sessionAge <= 30 * 60 * 1000; // 30 minutes
 
       if (sessionValid) {
         return {
-          aspenCookie: row.aspen_cookie,
-          aspenSessionId: row.aspen_session_id,
-          aspenTaglib: row.aspen_taglib,
+          aspenCookie: row.aspen_cookie?.toString() || "",
+          aspenSessionId: row.aspen_session_id?.toString() || "",
+          aspenTaglib: row.aspen_taglib?.toString() || "",
         };
       }
     }

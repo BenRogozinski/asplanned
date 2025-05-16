@@ -7,9 +7,6 @@ import LoginPage from "@/components/login";
 import * as cheerio from "cheerio";
 import React from "react";
 
-// Edge runtime mode for Cloudflare
-export const runtime = 'edge';
-
 export default async function Home() {
   try {
     const session = await getSession();

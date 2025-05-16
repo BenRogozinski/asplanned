@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.6",
     "cheerio": "^1.0.0",
     "mongodb": "^6.16.0",
     "next": "15.3.2",

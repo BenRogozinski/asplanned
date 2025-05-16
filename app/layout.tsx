@@ -5,6 +5,9 @@ import { getSession } from "@/lib/session";
 import { cookies } from "next/headers";
 import "./globals.css";
 
+// Edge runtime mode for Cloudflare
+export const runtime = 'edge';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
