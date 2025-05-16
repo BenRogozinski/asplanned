@@ -10,18 +10,19 @@
 
 .gradetable thead tr th,
 .gradetable tbody tr td {
+    vertical-align: top;
     padding-block: 4px;
-    padding-inline: 8px;
+    padding-inline: 12px;
 }
 
 .gradetable tbody tr td:first-child {
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
+    border-top-left-radius: 14px;
+    border-bottom-left-radius: 14px;
 }
 
 .gradetable tbody tr td:last-child {
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
 }
 
 .gradetable tbody tr:nth-child(even) td {
@@ -36,6 +37,47 @@
     width: 300px;
 }
 
+.classrow {
+    transition: all 0.2s;
+}
+
+.classrow:hover {
+    transform: scale(101%);
+}
+
+.classcolumn {
+    display: flex;
+    flex-flow: column;
+    gap: 12px;
+}
+
+.classname {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.classinfo {
+    visibility: hidden;
+    position: absolute;
+    grid-template-columns: 1fr 1fr;
+    display: grid;
+}
+
+.shown {
+    visibility: visible;
+    position: relative;
+}
+
+.arrow {
+    transition: transform 0.3s ease;
+}
+
+.rotated {
+    transform: rotate(90deg);
+}
+
 @media (max-width: 800px) {
     .gradetable tbody tr td:nth-child(1) {
         font-size: 12px;
@@ -43,5 +85,9 @@
 
     .gradetable tbody tr td:nth-child(2) {
         width: 120px;
+    }
+
+    .classinfo {
+        display: block;
     }
 }

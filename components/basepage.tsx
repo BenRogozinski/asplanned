@@ -5,8 +5,10 @@ import styles from "./basepage.module.css";
 
 export default async function BasePage({
   children,
+  username
 }: Readonly<{
   children?: React.ReactNode;
+  username?: string;
 }>) {
   return (
     <div className={styles.basepage}>
@@ -30,7 +32,7 @@ export default async function BasePage({
         <div className={styles.navbargroup}>
           <p className={styles.notification}>X</p>
           <div className={styles.userinfo}>
-            <p>Doe, John</p>
+            <p>{username || "UNKNOWN"}</p>
             <Image
               aria-hidden
               src="/placeholder-user.jpg"
@@ -42,7 +44,7 @@ export default async function BasePage({
         </div>
       </div>
       <div className={styles.content}>
-        {children || <p>[MAIN CONTENT]</p>}
+        {children || <h1>Nothing here yet!</h1>}
       </div>
       <div className={styles.footer}>
         <p>Footer link 1</p>
