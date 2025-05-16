@@ -7,7 +7,6 @@ import trim from "@/lib/trim";
 import LoginPage from "@/components/login";
 import * as cheerio from "cheerio";
 import React from "react";
-import Script from "next/script";
 
 export default async function Home() {
   try {
