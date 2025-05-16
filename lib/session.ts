@@ -1,5 +1,3 @@
-import sqlite3 from "sqlite3";
-import crypto from "crypto"; // Ensure this is imported for `crypto.randomUUID`
 import { cookies } from "next/headers";
 
 class SessionError extends Error {
@@ -9,85 +7,84 @@ class SessionError extends Error {
   }
 }
 
-export function newSession(aspenCookie: string, aspenSessionId: string, aspenTaglib: string): string {
-  const db = new sqlite3.Database("./sessions.db", sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-      throw new SessionError("Failed to connect to session database");
-    }
+const API_PROXY_URL = `${process.env.BASE_URL || "http://localhost:3000"}/api/mongodb-proxy`;
+
+// Helper function to call the serverless API
+async function callMongoDBProxy(action: string, data: Record<string, unknown>) {
+  const response = await fetch(API_PROXY_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ action, data }),
   });
 
-  const token = crypto.randomUUID();
-  const createdAt = Date.now();
+  if (!response.ok) {
+    throw new SessionError(`MongoDB Proxy request failed: ${response.statusText}`);
+  }
 
-  db.run(
-    `INSERT INTO sessions(token, aspen_cookie, aspen_session_id, aspen_taglib, created_at) 
-     VALUES(?, ?, ?, ?, ?)`,
-    [token, aspenCookie, aspenSessionId, aspenTaglib, createdAt],
-    (err) => {
-      db.close();
-      if (err) {
-        throw new SessionError("Failed to create a new login session");
-      }
-    }
-  );
-
-  return token;
+  return response.json();
 }
 
-type SessionRow = {
-  token: string;
-  aspen_cookie: string;
-  aspen_session_id: string;
-  aspen_taglib: string;
-  created_at: number;
-};
+// Create a new session
+export async function newSession(aspenCookie: string, aspenSessionId: string, aspenTaglib: string): Promise<string> {
+  try {
+    const token = crypto.randomUUID();
+    const createdAt = Date.now();
+
+    await callMongoDBProxy("insertOne", {
+      document: {
+        token,
+        aspen_cookie: aspenCookie,
+        aspen_session_id: aspenSessionId,
+        aspen_taglib: aspenTaglib,
+        created_at: createdAt,
+      },
+    });
+
+    return token;
+  } catch {
+    throw new SessionError("Failed to create a new login session");
+  }
+}
+
+// Retrieve an existing session
+export async function getSession(): Promise<AspenSession | null> {
+  const cookieJar = await cookies();
+  const token = cookieJar.get("AsplannedToken")?.value || "";
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const result = await callMongoDBProxy("findOne", {
+      filter: { token },
+    });
+
+    const row = result.result;
+
+    if (row) {
+      const sessionAge = Date.now() - row.created_at;
+      const sessionValid = sessionAge <= 30 * 60 * 1000; // 30 minutes
+
+      if (sessionValid) {
+        return {
+          aspenCookie: row.aspen_cookie,
+          aspenSessionId: row.aspen_session_id,
+          aspenTaglib: row.aspen_taglib,
+        };
+      }
+    }
+
+    return null; // No session found or session expired
+  } catch {
+    throw new SessionError("Failed to retrieve session");
+  }
+}
 
 export type AspenSession = {
   aspenCookie: string;
   aspenSessionId: string;
   aspenTaglib: string;
 };
-
-export async function getSession(): Promise<AspenSession | null> {
-  const cookieJar = await cookies();
-  const token = cookieJar.get("AsplannedToken")?.value || "";
-
-  return new Promise((resolve, reject) => {
-    const db = new sqlite3.Database("./sessions.db", sqlite3.OPEN_READWRITE, (err) => {
-      if (err) {
-        reject(new SessionError("Failed to connect to session database"));
-        return;
-      }
-    });
-
-    db.get(
-      "SELECT * FROM sessions WHERE token = ?",
-      [token],
-      (err: Error | null, row: SessionRow) => {
-        db.close();
-
-        if (err) {
-          reject(new SessionError("Failed to retrieve session"));
-          return;
-        }
-
-        if (row) {
-          const sessionAge = Date.now() - row.created_at;
-          const sessionValid = sessionAge <= 30 * 60 * 1000; // 30 minutes
-
-          if (sessionValid) {
-            resolve({
-              aspenCookie: row.aspen_cookie,
-              aspenSessionId: row.aspen_session_id,
-              aspenTaglib: row.aspen_taglib,
-            });
-          } else {
-            resolve(null); // Session expired
-          }
-        } else {
-          resolve(null); // No session found
-        }
-      }
-    );
-  });
-}

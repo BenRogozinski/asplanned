@@ -62,7 +62,7 @@ async function handleSuccessfulLogin(aspen: AspenNavigator): Promise<Response> {
   asplannedTokenCookie.key = "AsplannedToken";
   asplannedTokenCookie.path = "/";
   asplannedTokenCookie.secure = false;
-  asplannedTokenCookie.value = newSession(
+  asplannedTokenCookie.value = await newSession(
     cookies.AspenCookie || "",
     cookies.JSESSIONID || "",
     aspen.form["org.apache.struts.taglib.html.TOKEN"] || ""
