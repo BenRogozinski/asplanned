@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: { default: "AsPlanned", template: "%s | AsPlanned"},
+  title: { default: "AsPlanned", template: "%s | AsPlanned" },
   description: "AsPlanned: Take charge of your classes!",
 };
 

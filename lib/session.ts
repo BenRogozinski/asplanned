@@ -27,6 +27,14 @@ export async function newSession(aspenCookie: string, aspenSessionId: string, as
     const token = crypto.randomUUID();
     const createdAt = Date.now();
 
+    // Cleanup expired sessions
+    const expirationThreshold = createdAt - 30 * 60 * 1000; // 30 minutes ago
+    await client.execute({
+      sql: `DELETE FROM sessions WHERE created_at < ?`,
+      args: [expirationThreshold],
+    });
+
+    // Insert the new session
     await client.execute({
       sql: `INSERT INTO sessions (token, aspen_cookie, aspen_session_id, aspen_taglib, created_at) VALUES (?, ?, ?, ?, ?)`,
       args: [token, aspenCookie, aspenSessionId, aspenTaglib, createdAt],
