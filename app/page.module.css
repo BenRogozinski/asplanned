@@ -10,7 +10,7 @@
 
 .gradetable thead tr th,
 .gradetable tbody tr td {
-    min-height: 40px;
+    min-height: 40px; /* Needed because Safari fucks up the height */
     padding-block: 4px;
     padding-inline: 12px;
 }
@@ -38,7 +38,7 @@
 }
 
 .classrow {
-    transition: all 0.2s;
+    transition: transform 0.2s;
 }
 
 .classrow:hover {
@@ -63,7 +63,12 @@
 .classinfo {
     display: none;
     grid-template-columns: 1fr 1fr;
-    animation: resize 0.5s ease reverse;
+    animation: resize 0.5s ease;
+}
+
+.classinfo a {
+    text-decoration: underline;
+    font-weight: bold;
 }
 
 .shown {
@@ -80,7 +85,7 @@
   }
   100%
   {
-    height: 52px;
+    height: 78px;
   }
 }
 
@@ -106,6 +111,7 @@
         display: block;
     }
 
+    /* Comes out to a different size on mobile */
     @keyframes resize
     {
       0%
@@ -114,7 +120,7 @@
       }
       100%
       {
-        height: 64px;
+        height: 80px;
       }
     }
 }

@@ -8,6 +8,7 @@ import LoginPage from "@/components/login";
 import * as cheerio from "cheerio";
 import React from "react";
 import Script from "next/script";
+import Link from "next/link";
 
 export default async function Home() {
   try {
@@ -45,6 +46,7 @@ export default async function Home() {
                 <p>Classroom: {trim(row("td:nth-child(7)").text()) || "N/A"}</p>
                 <p>Absences: {trim(row("td:nth-child(9)").text())}</p>
                 <p>Tardies: {trim(row("td:nth-child(10)").text())}</p>
+                <Link href={`/class?id=${aspenId}`}>View Class &gt;</Link>
               </div>
             </td>
             <td><p>{trim(row("td:nth-child(8)").text()) || "N/A"}</p></td>
