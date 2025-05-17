@@ -10,7 +10,6 @@
 
 .gradetable thead tr th,
 .gradetable tbody tr td {
-    vertical-align: top;
     padding-block: 4px;
     padding-inline: 12px;
 }
