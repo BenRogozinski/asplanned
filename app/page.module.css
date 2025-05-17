@@ -10,6 +10,7 @@
 
 .gradetable thead tr th,
 .gradetable tbody tr td {
+    min-height: 40px;
     padding-block: 4px;
     padding-inline: 12px;
 }
@@ -47,6 +48,8 @@
 
 .classcolumn {
     display: flex;
+    justify-content: center;
+    justify-items: center;
     flex-flow: column;
     gap: 12px;
 }
@@ -54,24 +57,36 @@
 .classname {
     display: flex;
     flex-flow: row;
-    align-items: center;
     gap: 12px;
 }
 
 .classinfo {
-    visibility: hidden;
-    position: absolute;
+    display: none;
     grid-template-columns: 1fr 1fr;
-    display: grid;
+    animation: resize 0.5s ease reverse;
 }
 
 .shown {
-    visibility: visible;
-    position: relative;
+    display: grid;
+    overflow: hidden;
+    animation: resize 0.5s ease;
+}
+
+@keyframes resize
+{
+  0%
+  {
+    height: 0;
+  }
+  100%
+  {
+    height: 52px;
+  }
 }
 
 .arrow {
-    transition: transform 0.2s ease;
+    margin-block: auto;
+    transition: transform 0.5s ease;
 }
 
 .rotated {
@@ -87,7 +102,19 @@
         width: 120px;
     }
 
-    .classinfo {
+    .shown {
         display: block;
+    }
+
+    @keyframes resize
+    {
+      0%
+      {
+        height: 0;
+      }
+      100%
+      {
+        height: 64px;
+      }
     }
 }
