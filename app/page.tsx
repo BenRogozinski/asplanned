@@ -7,6 +7,7 @@ import trim from "@/lib/trim";
 import LoginPage from "@/components/login";
 import * as cheerio from "cheerio";
 import React from "react";
+import Script from "next/script";
 
 export default async function Home() {
   try {
@@ -63,28 +64,24 @@ export default async function Home() {
             </thead>
             <tbody>{classRows}</tbody>
           </table>
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                document.addEventListener("DOMContentLoaded", () => {
-                  const rows = document.querySelectorAll("tr[data-id]");
-                  rows.forEach((row) => {
-                    row.addEventListener("click", (event) => {
-                      id = event.target.closest("tr").getAttribute("data-id");
-                      const arrow = document.getElementById(\`arrow-\${id}\`);
-                      const classinfo = document.getElementById(\`classinfo-\${id}\`);
-                      if (arrow) {
-                        arrow.classList.toggle("${styles.rotated}");
-                      }
-                      if (classinfo) {
-                        classinfo.classList.toggle("${styles.shown}");
-                      }
-                    });
-                  });
+          <Script strategy="afterInteractive">
+            {`
+              const rows = document.querySelectorAll("tr[data-id]");
+              rows.forEach((row) => {
+                row.addEventListener("click", (event) => {
+                  const id = event.target.closest("tr").getAttribute("data-id");
+                  const arrow = document.getElementById(\`arrow-\${id}\`);
+                  const classinfo = document.getElementById(\`classinfo-\${id}\`);
+                  if (arrow) {
+                    arrow.classList.toggle("${styles.rotated}");
+                  }
+                  if (classinfo) {
+                    classinfo.classList.toggle("${styles.shown}");
+                  }
                 });
-              `
-            }}
-          />
+              });
+            `}
+          </Script>
         </BasePage>
       );
     } else {
