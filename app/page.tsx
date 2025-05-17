@@ -64,7 +64,7 @@ export default async function Home() {
             </thead>
             <tbody>{classRows}</tbody>
           </table>
-          <Script strategy="afterInteractive">
+          <Script id="expandgrades" strategy="afterInteractive">
             {`
               const rows = document.querySelectorAll("tr[data-id]");
               rows.forEach((row) => {
