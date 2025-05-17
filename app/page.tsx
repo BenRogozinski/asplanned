@@ -71,14 +71,17 @@ export default async function Home() {
               const rows = document.querySelectorAll("tr[data-id]");
               rows.forEach((row) => {
                 row.addEventListener("click", (event) => {
-                  const id = event.target.closest("tr").getAttribute("data-id");
-                  const arrow = document.getElementById(\`arrow-\${id}\`);
-                  const classinfo = document.getElementById(\`classinfo-\${id}\`);
-                  if (arrow) {
-                    arrow.classList.toggle("${styles.rotated}");
-                  }
-                  if (classinfo) {
-                    classinfo.classList.toggle("${styles.shown}");
+                  // Exclusion for the view class link
+                  if (event.target.tagName !== "A") {
+                    const id = event.target.closest("tr").getAttribute("data-id");
+                    const arrow = document.getElementById(\`arrow-\${id}\`);
+                    const classinfo = document.getElementById(\`classinfo-\${id}\`);
+                    if (arrow) {
+                      arrow.classList.toggle("${styles.rotated}");
+                    }
+                    if (classinfo) {
+                      classinfo.classList.toggle("${styles.shown}");
+                    }
                   }
                 });
               });
