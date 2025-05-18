@@ -2,8 +2,8 @@ import BasePage from "@/components/BasePage/BasePage";
 import { getNavigator } from "@/lib/aspen";
 import trim from "@/lib/trim";
 import * as cheerio from "cheerio";
-import React from "react";
 import ClassTable, { ClassInformation } from "@/components/ClassTable/ClassTable";
+import ActivityFeed from "@/components/ActivityFeed/ActivityFeed";
 
 export default async function Home() {
   const aspen = await getNavigator();
@@ -11,7 +11,7 @@ export default async function Home() {
   // Navigate to class list page
   await aspen.navigate("/portalClassList.do?navkey=academics.classes.list");
   if (!aspen.dom) {
-    throw new Error("Failed to load DOM from Aspen. Ensure the page is accessible.");
+    throw new Error("Failed to load DOM from Aspen");
   }
 
   // Create array of class information from scraped table
@@ -34,6 +34,8 @@ export default async function Home() {
     <BasePage>
       <h1>Classes</h1>
       <ClassTable classInformation={classInformation} />
+      <h1>Activity Feed</h1>
+      <ActivityFeed />
     </BasePage>
   );
 }

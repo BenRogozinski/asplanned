@@ -1,4 +1,3 @@
-import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from "./BasePage.module.css";
@@ -39,7 +38,6 @@ export default async function BasePage({
           <Link href="/tools" className={styles.navbarlink}>Tools</Link>
         </div>
         <div className={styles.navbargroup}>
-          <p className={styles.notification}>X</p>
           <div className={styles.userinfo}>
             <p className={styles.username}>{username}</p>
             <Image
