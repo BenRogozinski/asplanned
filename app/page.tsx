@@ -68,6 +68,8 @@ export default async function Home() {
           </table>
           <Script id="expandgrades" strategy="afterInteractive">
             {`
+              // Prevent Back-Forward caching
+              window.onunload = function(){};
               const rows = document.querySelectorAll("tr[data-id]");
               rows.forEach((row) => {
                 row.addEventListener("click", (event) => {
