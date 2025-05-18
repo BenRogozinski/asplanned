@@ -55,7 +55,7 @@ export default async function Home() {
       });
 
       return (
-        <BasePage username={trim($("#userPreferenceMenu").text()) || "N/A"}>
+        <BasePage>
           <h1>Classes</h1>
           <table className={styles.gradetable}>
             <thead>

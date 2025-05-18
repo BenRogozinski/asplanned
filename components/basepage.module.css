@@ -55,6 +55,7 @@
   flex-flow: row;
   gap: 12px;
   align-items: center;
+  width: 100%;
 }
 
 .content {

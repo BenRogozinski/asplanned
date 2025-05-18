@@ -51,6 +51,7 @@ export async function getSession(): Promise<AspenSession | null> {
   const cookieJar = await cookies();
   const token = cookieJar.get("AsplannedToken")?.value || "";
 
+  // No token to begin with
   if (!token) {
     return null;
   }
@@ -61,6 +62,10 @@ export async function getSession(): Promise<AspenSession | null> {
       args: [token],
     });
 
+    // No session in database
+    if (!result.rows.length) {
+      return null;
+    }
     const row = result.rows[0];
 
     if (row) {
@@ -68,15 +73,20 @@ export async function getSession(): Promise<AspenSession | null> {
       const sessionValid = sessionAge <= 30 * 60 * 1000; // 30 minutes
 
       if (sessionValid) {
-        return {
-          aspenCookie: row.aspen_cookie?.toString() || "",
-          aspenSessionId: row.aspen_session_id?.toString() || "",
-          aspenTaglib: row.aspen_taglib?.toString() || "",
-        };
+        const aspenCookie = row.aspen_cookie?.toString() || "";
+        const aspenSessionId = row.aspen_session_id?.toString() || "";
+        const aspenTaglib = row.aspen_taglib?.toString() || "";
+        if (aspenCookie && aspenSessionId && aspenTaglib) {
+          return {
+            aspenCookie,
+            aspenSessionId,
+            aspenTaglib
+          };
+        }
       }
     }
 
-    return null; // No session found or session expired
+    return null; // Session expired or is missing information
   } catch {
     throw new SessionError("Failed to retrieve session");
   }

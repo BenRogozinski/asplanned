@@ -2,14 +2,23 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from "./basepage.module.css";
+import { cookies } from 'next/headers';
 
 export default async function BasePage({
-  children,
-  username
+  children
 }: Readonly<{
   children?: React.ReactNode;
-  username?: string;
 }>) {
+  const cookieJar = await cookies();
+  const username = (cookieJar.get("AsplannedUsername")?.value || "UNKNOWN");
+  const pfpBase64 = cookieJar.get("AsplannedPfp")?.value || null;
+  let pfpUrl: string;
+  if (pfpBase64) {
+    pfpUrl = `data:image/jpg;base64,${pfpBase64}`;
+  } else {
+    pfpUrl = "/placeholder-user.jpg";
+  }
+
   return (
     <div className={styles.basepage}>
       <div className={styles.navbar}>
@@ -32,10 +41,10 @@ export default async function BasePage({
         <div className={styles.navbargroup}>
           <p className={styles.notification}>X</p>
           <div className={styles.userinfo}>
-            <p>{username || "UNKNOWN"}</p>
+            <p className={styles.username}>{username}</p>
             <Image
               aria-hidden
-              src="/placeholder-user.jpg"
+              src={pfpUrl}
               alt="User icon"
               width={44}
               height={44}

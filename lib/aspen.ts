@@ -37,37 +37,41 @@ class AspenAuthenticationError extends Error {
 export class AspenNavigator {
   public base_url: string;
   public url: string;
+  public response: Response | null;
   public form: Record<string, string>;
-  public jar: CookieJar;
   public dom: cheerio.CheerioAPI | null;
+  public jar: CookieJar;
 
   constructor(jar: CookieJar = new CookieJar()) {
     this.base_url = "https://aspen.cps.edu/aspen";
     this.url = this.base_url;
+    this.response = null;
     this.form = {};
     this.dom = null;
     this.jar = jar;
   }
 
   // Load page, parse form, save cookies
-  async navigate(path: string): Promise<void> {
+  async navigate(path: string, parseDom: boolean = true): Promise<void> {
     this.url = this.base_url + trimPath(path);
 
     try {
-      const response = await this.fetchWithCookies(this.url, {
+      this.response = await this.fetchWithCookies(this.url, {
         method: "GET",
         redirect: "follow",
       });
 
-      if (response.status === 404) {
+      if (this.response.status === 404) {
         throw new AspenAuthenticationError("404 Not Found: Unable to navigate to the specified path.");
       }
 
-      const responseText = await response.text();
-      ({ form: this.form, dom: this.dom } = parsePage(responseText));
+      if (parseDom) {
+        const responseText = await this.response.text();
+        ({ form: this.form, dom: this.dom } = parsePage(responseText));
+      }
 
       // Update URL after any redirect
-      this.url = response.url || this.url;
+      this.url = this.response.url || this.url;
     } catch (error) {
       this.handleError(error, "navigate");
     }
@@ -76,7 +80,7 @@ export class AspenNavigator {
   // Submit form and parse result
   async submit(): Promise<void> {
     try {
-      const response = await this.fetchWithCookies(this.url, {
+      this.response = await this.fetchWithCookies(this.url, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -85,15 +89,15 @@ export class AspenNavigator {
         redirect: "follow",
       });
 
-      if (response.status === 404) {
+      if (this.response.status === 404) {
         throw new AspenAuthenticationError("404 Not Found: Unable to submit the form.");
       }
 
-      const responseText = await response.text();
+      const responseText = await this.response.text();
       ({ form: this.form, dom: this.dom } = parsePage(responseText));
 
       // Update URL after any redirect
-      this.url = response.url || this.url;
+      this.url = this.response.url || this.url;
     } catch (error) {
       this.handleError(error, "submit");
     }
