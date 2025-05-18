@@ -6,7 +6,7 @@ to use Aspen in a headless context.
 
 import { Cookie, CookieJar } from "tough-cookie";
 import * as cheerio from "cheerio";
-import { AspenSession, getSession } from "./session";
+import { getSession } from "./session";
 
 // Utility functions to clean paths
 const trimPath = (path: string): string => `/${path.replace(/^\/+/, "")}`;
