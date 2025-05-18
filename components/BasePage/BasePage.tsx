@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from "./basepage.module.css";
+import styles from "./BasePage.module.css";
 import { cookies } from 'next/headers';
 
 export default async function BasePage({

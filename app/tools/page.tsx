@@ -1,4 +1,4 @@
-import BasePage from "@/components/basepage";
+import BasePage from "@/components/BasePage/BasePage";
 //import styles from "./page.module.css";
 import { Metadata } from "next";
 

@@ -6,7 +6,7 @@ to use Aspen in a headless context.
 
 import { Cookie, CookieJar } from "tough-cookie";
 import * as cheerio from "cheerio";
-import { AspenSession } from "./session";
+import { AspenSession, getSession } from "./session";
 
 // Utility functions to clean paths
 const trimPath = (path: string): string => `/${path.replace(/^\/+/, "")}`;
@@ -149,7 +149,8 @@ export class AspenNavigator {
 }
 
 // Function to initialize and return an AspenNavigator instance
-export async function getNavigator(session: AspenSession | null): Promise<AspenNavigator> {
+export async function getNavigator(): Promise<AspenNavigator> {
+  const session = await getSession();
   if (!session) {
     throw new AspenAuthenticationError("Session invalid");
   }

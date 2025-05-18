@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import styles from "./login.module.css";
+import styles from "./LoginPage.module.css";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 

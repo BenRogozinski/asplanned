@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import LoginPage from "@/components/login";
+import LoginPage from "@/components/LoginPage/LoginPage";
 import { getSession } from "@/lib/session";
 import { cookies } from "next/headers";
 import "./globals.css";
