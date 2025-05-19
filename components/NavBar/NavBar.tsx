@@ -35,6 +35,7 @@ export default async function NavBar() {
         <Link className={styles.profileDropdownLink} href="https://www.google.com">
           <p>{username}</p>
           <Image
+            className={styles.profilePicture}
             src={pfpSource}
             alt="Profile picture"
             width={28}

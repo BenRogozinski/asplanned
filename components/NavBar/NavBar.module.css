@@ -29,11 +29,12 @@
   padding-inline: 8px;
   border-radius: 16px;
   background-color: var(--foreground);
-  transition: background-color 0.2s ease-out;
+  transition: all 0.3s ease;
 }
 
 .navBarGroup a:hover {
-  background-color: var(--link-dark-color);
+  color: var(--foreground);
+  background-color: #070707;
 }
 
 .homeLink {
@@ -43,6 +44,14 @@
   gap: 10px;
 }
 
+.homeLink img {
+  transition: all 0.3s ease;
+}
+
+.homeLink:hover img {
+  filter: invert();
+}
+
 .profileDropdownLink {
   display: flex;
   flex-flow: row;
@@ -50,7 +59,7 @@
   gap: 10px;
 }
 
-.profileDropdownLink img {
+.profilePicture {
   border-radius: 8px;
 }
 
