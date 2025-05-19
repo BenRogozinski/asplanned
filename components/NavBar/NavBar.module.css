@@ -29,12 +29,15 @@
   padding-inline: 8px;
   border-radius: 16px;
   background-color: var(--foreground);
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
-.navBarGroup a:hover {
-  color: var(--foreground);
-  background-color: #070707;
+/* Only apply hover effect to desktop */
+@media (min-width: 800px) {
+  .navBarGroup a:hover {
+    color: var(--foreground);
+    background-color: #070707;
+  }
 }
 
 .homeLink {
@@ -45,11 +48,14 @@
 }
 
 .homeLink img {
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
-.homeLink:hover img {
-  filter: invert();
+/* Only apply hover effect to desktop */
+@media (min-width: 800px) {
+  .homeLink:hover img {
+    filter: invert();
+  }
 }
 
 .profileDropdownLink {
