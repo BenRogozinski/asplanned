@@ -76,7 +76,7 @@
 @media (max-width: 800px) {
   .navBar {
     flex-flow: column;
-    padding-inline: 10px;
+    padding-block: 10px;
   }
 
   .navBarGroup {
