@@ -1,0 +1,70 @@
+.navBar {
+  flex: 0 0 50px;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-inline: 8px;
+  border-radius: 20px;
+  background-color: var(--foreground);
+
+  --link-light-color: #e5e5e5;
+  --link-dark-color: #c7c7c7;
+}
+
+.navBarGroup {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.navBarGroup a {
+  font-size: 22px;
+  text-align: center;
+  line-height: 36px;
+  font-weight: bold;
+  color: #070707;
+  padding-inline: 8px;
+  border-radius: 16px;
+  background-color: var(--foreground);
+  transition: background-color 0.2s ease-out;
+}
+
+.navBarGroup a:hover {
+  background-color: var(--link-dark-color);
+}
+
+.homeLink {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.profileDropdownLink {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.profileDropdownLink img {
+  border-radius: 8px;
+}
+
+.profileDropdownLink p {
+  font-size: 18px;
+}
+
+@media (max-width: 800px) {
+  .navBar {
+    flex-flow: column;
+  }
+
+  .navBarGroup {
+    width: 100%;
+    flex-flow: column;
+  }
+}

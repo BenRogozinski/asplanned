@@ -3,7 +3,6 @@ import { getNavigator } from "@/lib/aspen";
 import trim from "@/lib/trim";
 import * as cheerio from "cheerio";
 import ClassTable, { ClassInformation } from "@/components/ClassTable/ClassTable";
-import ActivityFeed from "@/components/ActivityFeed/ActivityFeed";
 
 export default async function Home() {
   const aspen = await getNavigator();
@@ -34,8 +33,6 @@ export default async function Home() {
     <BasePage>
       <h1>Classes</h1>
       <ClassTable classInformation={classInformation} />
-      <h1>Activity Feed</h1>
-      <ActivityFeed />
     </BasePage>
   );
 }

@@ -10,58 +10,6 @@
   font-family: var(--font-geist-sans);
 }
 
-.navbar {
-  flex: 0 0 50px;
-  display: flex;
-  flex-flow: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: 80%;
-  padding-block: 4px;
-  border-radius: 20px;
-  background-color: var(--foreground);
-  padding-inline: 20px;
-}
-
-.navbargroup {
-  display: flex;
-  flex-flow: row;
-  align-items: center;
-  height: 100%;
-  gap: 30px;
-  padding-inline: 10px;
-}
-
-.navbargroup {
-  color: var(--text);
-  font-size: 20px;
-}
-
-.navbar a {
-  transition: all 0.5s;
-}
-
-.navbar a:hover {
-  transform: scale(110%);
-  text-decoration: underline 2px;
-  transition: all 0.2s;
-}
-
-.logo,
-.logo img {
-  height: 40px;
-  width: auto;
-}
-
-.userinfo {
-  display: flex;
-  flex-flow: row;
-  gap: 12px;
-  align-items: center;
-  width: 100%;
-}
-
 .content {
   flex: 1 1 auto;
   display: flex;

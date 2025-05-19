@@ -108,7 +108,7 @@ async function handleSuccessfulLogin(aspen: AspenNavigator): Promise<Response> {
         await aspen.navigate(imageUrl, false);
         if (aspen.response) {
           const decodedImage = await decodeImageResponse(aspen.response);
-          const resizedImage = nearestNeighborResize(decodedImage, 44, 44);
+          const resizedImage = nearestNeighborResize(decodedImage, 28, 28);
           const encodedImage = encodeImageBase64(resizedImage, 50);
 
           const asplannedPfpCookie = new Cookie();

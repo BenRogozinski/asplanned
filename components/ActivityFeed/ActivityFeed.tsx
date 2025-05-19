@@ -15,6 +15,7 @@ export default function ActivityFeed({
 }>) {
   return (
     <div className={styles.activityFeed}>
+      {activityInformation?.date}
     </div>
   );
 }
