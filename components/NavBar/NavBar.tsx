@@ -26,6 +26,7 @@ export default function NavBar() {
   
       expandNavBarImage?.classList.toggle(styles.spin);
       linkNavBarGroup?.classList.toggle(styles.expanded);
+      return false;
     }
   }
 
@@ -35,7 +36,7 @@ export default function NavBar() {
   return (
     <div className={styles.navBar}>
       <div className={`${styles.navBarGroup} ${styles.mobileNavBarGroup}`} onClick={expandNavBar}>
-        <Link href="" id="expandNavBarButton">
+        <Link href="" id="expandNavBarButton" onClick={e => e.preventDefault()}>
           <Image
             className={styles.expandNavBarImage}
             id="expandNavBarImage"
