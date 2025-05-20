@@ -1,5 +1,8 @@
 import { createClient } from "@libsql/client";
 import { cookies } from "next/headers";
+import { Logger } from "./logger";
+
+const logger = new Logger("session");
 
 class SessionError extends Error {
   constructor(message: string) {
@@ -23,11 +26,13 @@ const client = createClient({
 
 // Create a new session
 export async function newSession(aspenCookie: string, aspenSessionId: string, aspenTaglib: string): Promise<string> {
+  logger.debug("Generating new session");
   try {
     const token = crypto.randomUUID();
     const createdAt = Date.now();
 
     // Cleanup expired sessions
+    logger.debug("Cleaning up expired sessions");
     const expirationThreshold = createdAt - 30 * 60 * 1000; // 30 minutes ago
     await client.execute({
       sql: `DELETE FROM sessions WHERE created_at < ?`,
@@ -35,6 +40,7 @@ export async function newSession(aspenCookie: string, aspenSessionId: string, as
     });
 
     // Insert the new session
+    logger.debug("Inserting new session into database");
     await client.execute({
       sql: `INSERT INTO sessions (token, aspen_cookie, aspen_session_id, aspen_taglib, created_at) VALUES (?, ?, ?, ?, ?)`,
       args: [token, aspenCookie, aspenSessionId, aspenTaglib, createdAt],
@@ -48,11 +54,14 @@ export async function newSession(aspenCookie: string, aspenSessionId: string, as
 
 // Retrieve an existing session
 export async function getSession(): Promise<AspenSession | null> {
+  logger.debug("Getting current session");
+
   const cookieJar = await cookies();
   const token = cookieJar.get("AsplannedToken")?.value || "";
 
   // No token to begin with
   if (!token) {
+    logger.debug("No token found");
     return null;
   }
 
@@ -88,7 +97,7 @@ export async function getSession(): Promise<AspenSession | null> {
 
     return null; // Session expired or is missing information
   } catch {
-    throw new SessionError("Failed to retrieve session");
+    throw null;
   }
 }
 

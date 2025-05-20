@@ -37,25 +37,14 @@
 @media (max-width: 950px) {
   .basepage {
     display: flex;
-    gap: 5px;
-    padding: 0px;
-  }
-
-  .navbar {
-    height: fit-content;
-    flex-flow: column;
-    gap: 20px;
-    padding-block: 10px;
-    border-radius: 0px 0px 20px 20px;
-  }
-
-  .navbargroup {
-    flex-flow: column;
-    height: fit-content;
+    gap: 6px;
+    padding-inline: 0px;
+    padding-block: 6px;
   }
 
   .content {
     height: fit-content;
+    overflow: visible;
   }
 
   .footer {

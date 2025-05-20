@@ -21,6 +21,10 @@
 }
 
 .navBarGroup a {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  gap: 10px;
   font-size: 22px;
   text-align: center;
   line-height: 36px;
@@ -30,6 +34,11 @@
   border-radius: 16px;
   background-color: var(--foreground);
   transition: all 0.2s ease;
+}
+
+/* Only show mobile navbar on... mobile */
+.mobileNavBarGroup {
+  display: none;
 }
 
 /* Only apply hover effect to desktop */
@@ -58,13 +67,6 @@
   }
 }
 
-.profileDropdownLink {
-  display: flex;
-  flex-flow: row;
-  align-items: center;
-  gap: 10px;
-}
-
 .profileDropdownLink img {
   border-radius: 8px;
 }
@@ -75,12 +77,42 @@
 
 @media (max-width: 800px) {
   .navBar {
+    padding: 10px;
     flex-flow: column;
-    padding-block: 10px;
+    gap: 0px;
   }
 
-  .navBarGroup {
+  .mobileNavBarGroup {
+    display: flex;
+    justify-content: space-between;
     width: 100%;
+  }
+
+  .expandNavBarImage {
+    transition: transform 0.6s ease-in-out;
+  }
+
+  .spin {
+    transform: rotate(360deg);
+  }
+
+  .linkNavBarGroup {
     flex-flow: column;
+    max-height: 0px;
+    overflow: hidden;
+    transition: max-height 0.6s ease-out;
+  }
+
+  .linkNavBarGroup.expanded {
+    max-height: 500px;
+    transition: max-height 0.6s ease-in;
+  }
+
+  .homeLink {
+    display: none !important;
+  }
+
+  .profileNavBarGroup {
+    display: none;
   }
 }

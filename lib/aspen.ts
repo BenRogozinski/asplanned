@@ -7,8 +7,11 @@ to use Aspen in a headless context.
 import { Cookie, CookieJar } from "tough-cookie";
 import * as cheerio from "cheerio";
 import { getSession } from "./session";
+import { Logger } from "./logger";
 
-// Utility functions to clean paths
+const logger = new Logger("aspen");
+
+// Utility function to clean path
 const trimPath = (path: string): string => `/${path.replace(/^\/+/, "")}`;
 
 // Function to parse form data from HTML
@@ -55,6 +58,8 @@ export class AspenNavigator {
   async navigate(path: string, parseDom: boolean = true): Promise<void> {
     this.url = this.base_url + trimPath(path);
 
+    logger.debug(`Navigating to ${this.url}`);
+
     try {
       this.response = await this.fetchWithCookies(this.url, {
         method: "GET",
@@ -79,6 +84,8 @@ export class AspenNavigator {
 
   // Submit form and parse result
   async submit(): Promise<void> {
+    logger.debug(`Submitting form at ${this.url}`);
+
     try {
       this.response = await this.fetchWithCookies(this.url, {
         method: "POST",
@@ -105,6 +112,7 @@ export class AspenNavigator {
 
   // Modify form values
   setField(name: string, value: string): void {
+    logger.debug(`Setting form field '${name}' to '${name !== "password" ? value : "********"}'`);
     this.form[name] = value;
   }
 
@@ -149,11 +157,14 @@ export class AspenNavigator {
 }
 
 // Function to initialize and return an AspenNavigator instance
-export async function getNavigator(): Promise<AspenNavigator> {
+export async function getNavigator(): Promise<AspenNavigator | null> {
   const session = await getSession();
+
   if (!session) {
-    throw new AspenAuthenticationError("Session invalid");
+    return null;
   }
+
+  logger.debug("Creating navigator for current session");
 
   const jar = new CookieJar();
   const baseUrl = "https://aspen.cps.edu/";

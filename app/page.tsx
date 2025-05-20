@@ -7,6 +7,10 @@ import ClassTable, { ClassInformation } from "@/components/ClassTable/ClassTable
 export default async function Home() {
   const aspen = await getNavigator();
 
+  if (!aspen) {
+    return;
+  }
+
   // Navigate to class list page
   await aspen.navigate("/portalClassList.do?navkey=academics.classes.list");
   if (!aspen.dom) {
