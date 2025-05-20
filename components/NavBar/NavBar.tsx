@@ -17,13 +17,16 @@ export default function NavBar() {
   //}
 
   function expandNavBar(event: React.MouseEvent) {
-    event.preventDefault();
+    const eventElement = (event.target as HTMLElement);
+    if (eventElement.closest("a")?.id === "expandNavBarButton" || eventElement.tagName === "DIV") {
+      event.preventDefault();
     
-    const expandNavBarImage = document.getElementById("expandNavBarImage");
-    const linkNavBarGroup = document.getElementById("linkNavBarGroup");
-
-    expandNavBarImage?.classList.toggle(styles.spin);
-    linkNavBarGroup?.classList.toggle(styles.expanded);
+      const expandNavBarImage = document.getElementById("expandNavBarImage");
+      const linkNavBarGroup = document.getElementById("linkNavBarGroup");
+  
+      expandNavBarImage?.classList.toggle(styles.spin);
+      linkNavBarGroup?.classList.toggle(styles.expanded);
+    }
   }
 
   const username = "Doe, John";
@@ -31,8 +34,8 @@ export default function NavBar() {
 
   return (
     <div className={styles.navBar}>
-      <div className={`${styles.navBarGroup} ${styles.mobileNavBarGroup}`}>
-        <Link href="" onClick={expandNavBar}>
+      <div className={`${styles.navBarGroup} ${styles.mobileNavBarGroup}`} onClick={expandNavBar}>
+        <Link href="" id="expandNavBarButton">
           <Image
             className={styles.expandNavBarImage}
             id="expandNavBarImage"
