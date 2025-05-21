@@ -76,7 +76,8 @@ export class AspenNavigator {
       }
 
       // Update URL after any redirect
-      this.url = this.response.url || this.url;
+      logger.debug(`New URL is '${this.response.url}'`);
+      this.url = this.response.url;
     } catch (error) {
       this.handleError(error, "navigate");
     }
@@ -104,7 +105,8 @@ export class AspenNavigator {
       ({ form: this.form, dom: this.dom } = parsePage(responseText));
 
       // Update URL after any redirect
-      this.url = this.response.url || this.url;
+      logger.debug(`New URL is '${this.response.url}'`);
+      this.url = this.response.url;
     } catch (error) {
       this.handleError(error, "submit");
     }

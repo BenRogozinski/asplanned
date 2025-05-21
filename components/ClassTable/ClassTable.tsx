@@ -61,7 +61,7 @@ export default function ClassTable({
             <p>Classroom: {classroom}</p>
             <p>Absences: {absences}</p>
             <p>Tardies: {tardies}</p>
-            <Link href={`/class?id=${id}`} className={styles.viewClassLink}>View Class</Link>
+            <Link href={`/classOverview?id=${id}`} className={styles.viewClassLink}>View Class</Link>
           </div>
         </td>
         <td className={`${styles.cell} ${styles.classCell}`}>
@@ -87,5 +87,5 @@ export default function ClassTable({
         {classRows}
       </tbody>
     </table>
-  )
+  );
 }

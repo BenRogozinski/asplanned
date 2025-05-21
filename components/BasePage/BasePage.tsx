@@ -1,5 +1,6 @@
 import styles from "./BasePage.module.css";
 import NavBar from '../NavBar/NavBar';
+import Footer from "../Footer/Footer";
 
 export default async function BasePage({
   children
@@ -12,12 +13,7 @@ export default async function BasePage({
       <div className={styles.content}>
         {children || <h1>Nothing here yet!</h1>}
       </div>
-      <div className={styles.footer}>
-        <p>Footer link 1</p>
-        <p>Footer link 2</p>
-        <p>Footer link 3</p>
-        <p>Footer link 4</p>
-      </div>
+      <Footer />
     </div>
   );
 }

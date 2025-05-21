@@ -1,0 +1,32 @@
+.footer {
+  flex: 0 1 50px;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  width: 100%;
+  gap: 20px;
+  background-color: var(--background);
+}
+
+.footer a {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+@media (min-width: 950px) {
+  .footer a:hover {
+    text-decoration: underline;
+  }
+}
+
+@media (max-width: 950px) {
+  .footer {
+    flex-flow: column;
+    padding-block: 10px;
+    gap: 10px;
+  }
+
+  .footer a {
+    margin-inline: auto;
+  }
+}

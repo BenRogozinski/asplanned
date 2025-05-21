@@ -23,17 +23,6 @@
   overflow: scroll;
 }
 
-.footer {
-  flex: 0 1 50px;
-  display: flex;
-  flex-flow: row;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  gap: 20px;
-  background-color: var(--background);
-}
-
 @media (max-width: 950px) {
   .basepage {
     display: flex;
@@ -45,11 +34,5 @@
   .content {
     height: fit-content;
     overflow: visible;
-  }
-
-  .footer {
-    flex-flow: column;
-    height: fit-content;
-    padding-block: 10px;
   }
 }
