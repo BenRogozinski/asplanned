@@ -1,6 +1,6 @@
 "use client"
 
-import styles from "./ClassOverview.module.css";
+//import styles from "./ClassOverview.module.css";
 
 export type CategoryInformation = {
   name: string,
@@ -23,6 +23,6 @@ export default function ClassOverview({
   classOverviewInformation: ClassOverviewInformation
 }>) {
   return (
-    null
+    classOverviewInformation
   );
 }

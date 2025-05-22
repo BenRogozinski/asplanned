@@ -1,1 +1,1 @@
-export const zip = (rows:Array<Array<any>>) => rows[0].map((_,c)=>rows.map(row=>row[c]))
+export const zip = (rows:Array<Array<any>>) => rows[0].map((_,c)=>rows.map(row=>row[c])); // eslint-disable-line @typescript-eslint/no-explicit-any
