@@ -34,7 +34,6 @@ export default async function ClassOverviewPage({
   const classroom = aspen.dom("#propertyValue\\(relSscMstOid_mstRoomView\\)-span").text();
   const cumulative = trim(aspen.dom("div.detailContainer:nth-child(5) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2)").text());
   
-
   console.log({
     className,
     teachers,
