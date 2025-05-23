@@ -2,6 +2,7 @@ import BasePage from "@/components/BasePage/BasePage";
 import { Metadata } from "next";
 import { getNavigator } from "@/lib/aspen";
 import trim from "@/lib/trim";
+import ClassOverview from "@/components/ClassOverview/ClassOverview";
 
 export const metadata: Metadata = {
   title: "Class Overview"
@@ -33,24 +34,19 @@ export default async function ClassOverviewPage({
   const teacherEmail = aspen.dom("#propertyValue\\(relSscMstOid_relMstStfPrim_relStfPsnOid_psnEmail01\\)-span > a:nth-child(1)").text();
   const classroom = aspen.dom("#propertyValue\\(relSscMstOid_mstRoomView\\)-span").text();
   const cumulative = trim(aspen.dom("div.detailContainer:nth-child(5) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2)").text());
-  
-  console.log({
-    className,
-    teachers,
-    teacherEmail,
-    classroom,
-    cumulative
-  });
 
   return (
     <BasePage>
-      <h1>DEBUG INFO</h1>
-      Internal ID: {classId}<br/>
-      Class: {className}<br/>
-      Teachers: {teachers}<br/>
-      Teacher Email: {teacherEmail}<br/>
-      Classroom: {classroom}<br/>
-      Cumulative: {cumulative}<br/>
+      <h1>Class overview: {className} ({classroom})</h1>
+      <ClassOverview
+        classOverviewInformation={{
+          className,
+          teachers,
+          teacherEmail,
+          classroom,
+          cumulative
+        }}
+      />
     </BasePage>
   )
 }

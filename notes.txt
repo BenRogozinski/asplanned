@@ -1,69 +1,32 @@
-Stored information:
+Pages:
+    - Home (https://aspen.cps.edu/aspen/home.do)
+    - Demographics (https://aspen.cps.edu/aspen/portalStudentDetail.do TAB 1)
+    - Addresses (https://aspen.cps.edu/aspen/portalStudentDetail.do TAB 2)
+    - Transcript (https://aspen.cps.edu/aspen/transcriptList.do)
+    - Credit summary (https://aspen.cps.edu/aspen/creditSummary.do)
+    - Grade point summary (https://aspen.cps.edu/aspen/gradePointSummary.do)
+    - Course breakdown (https://aspen.cps.edu/aspen/gradePointSummary.do)
+    - Graduation summary (https://aspen.cps.edu/aspen/graduationSummary.do)
+    - Course breakdown (https://aspen.cps.edu/aspen/graduationSummary.do)
+    - Current schedule (https://aspen.cps.edu/aspen/studentScheduleMatrix.do)
+    - Contacts (https://aspen.cps.edu/aspen/contextList.do)
+    - Attendance (https://aspen.cps.edu/aspen/studentAttendanceList.do)
+    - Requests (https://aspen.cps.edu/aspen/studentRequestList.do)
+    - Classes (https://aspen.cps.edu/aspen/portalClassList.do)
+    - Class details (https://aspen.cps.edu/aspen/portalClassDetail.do)
+    - Class assignments (https://aspen.cps.edu/aspen/portalAssignmentList.do)
+    - Class attendance (https://aspen.cps.edu/aspen/contextList.do)
 
-- User information
-    - ID
-    - Timestamp
-    - UUID (for debugging)
-    - Aspen username
-    - Encrypted Aspen password
-    - Name
-    - School name
-    - Grade level
-    - Profile picture filename
-
-- Class information (per term)
-    - ID
-    - Timestamp
-    - Student ID
-    - Aspen ID (for class sharing)
-    - Class name
-    - Class level (regular, honors, AP, etc.)
-    - Teacher name
-    - Teacher email (for quick emails feature)
-    - Classroom
-
-    NOTES:
-    No grades (will be calculated from other data for better precision)
-
-- Category information (per class)
-    - ID
-    - Timestamp
-    - Student ID
-    - Class ID
-    - Category name
-    - Category weight
-
-- Attendence information (per class)
-    - ID
-    - Timestamp
-    - Student ID
-    - Class ID
-    - Record date
-    - Record code
-
-- Assignment information (per category)
-    - ID
-    - Timestamp
-    - Student ID
-    - Category ID
-    - Assignment name
-    - Assigned date
-    - Due date
-    - Points received
-    - Total possible Points
-    - Class high
-    - Class low
-    - Class median
-    - Class average
-    - Remarks
-
-- Generated report information (per student)
-    - ID
-    - Timestamp
-    - Student ID
-    - Report type
-    - Report filename
-
+Components
+    - Base page
+        - Navbar
+        - Main content area
+        - Footer
+    - Tabbed container
+    - Adjustable and mobile-friendly table
+    - Text input
+    - Dropdown
+    - Button
 
 Features:
     - Full replacement for Aspen with a clean design

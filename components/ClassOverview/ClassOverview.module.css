@@ -1,0 +1,25 @@
+.classOverview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 20px;
+}
+
+.classOverview div:nth-child(1) {
+  background-color: magenta;
+}
+
+.classOverview div:nth-child(2) {
+  background-color: blue;
+}
+
+.classOverview div:nth-child(3) {
+  background-color: cyan;
+}
+
+.classOverview div:nth-child(4) {
+  background-color: orange;
+}
+
+.classInformationTable td {
+  border: 2px solid black;
+}

@@ -89,11 +89,20 @@
   }
 
   .expandNavBarImage {
-    transition: transform 0.6s ease-in-out;
+    padding: 2px;
+    background-color: var(--foreground);
   }
 
   .spin {
-    transform: rotate(270deg);
+    animation: pop 0.6s ease-in-out;
+  }
+
+  @keyframes pop {
+    0% { transform: scale(1); filter: none; }
+    25% { transform: scale(1.1); filter: none; }
+    50% { transform: scale(1.2); filter: invert(50%); }
+    75% { transform: scale(1.1); filter: invert(); }
+    100% { transform: scale(1); filter: invert(); }
   }
 
   .linkNavBarGroup {
