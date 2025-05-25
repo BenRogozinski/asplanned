@@ -1,0 +1,76 @@
+.dynamicTable {
+  width: 100%;
+  --header-color: #c7c7c7;
+  --row-light-color: #e0e0e0;
+  --row-dark-color: #d7d7d7;
+  --button-color: #c0c0c0;
+  --expanded-content-color: #f1f1f1;
+}
+
+.dynamicTable caption {
+  text-align: left;
+  padding-left: 8px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.dynamicTable th,
+.dynamicTable td {
+  padding: 6px;
+  background-color: var(--row-light-color);
+}
+
+.dynamicTable th {
+  text-align: left;
+  background-color: var(--header-color);
+}
+
+.dynamicTable tr:first-child th:first-child {
+  border-top-left-radius: 10px;
+}
+
+.dynamicTable tr:first-child th:last-child {
+  border-top-right-radius: 10px;
+}
+
+.dynamicTable tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+.dynamicTable tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
+.dynamicTable a {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.dynamicTable button {
+  background-color: var(--button-color);
+  border: none;
+  padding-inline: 6px;
+  padding-block: 2px;
+  border-radius: 8px;
+}
+
+.alternatingRow td {
+  background-color: var(--row-dark-color);
+}
+
+.expandedContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 800px) {
+  .expandedRow {
+    height: fit-content;
+  }
+
+  .expandedContent {
+    display: block;
+    flex-flow: column;
+    height: fit-content;
+  }
+}

@@ -12,26 +12,32 @@
 
 .content {
   flex: 1 1 auto;
-  display: flex;
-  flex-flow: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-flow: dense;
+  gap: 10px;
   width: 100%;
-  height: 100%;
+  height: fit-content;
   background-color: var(--foreground);
   color: var(--text);
   border-radius: 20px;
   padding: 10px;
-  overflow: scroll;
 }
 
-@media (max-width: 950px) {
+.content>* {
+  height: fit-content;
+}
+
+@media (max-width: 1200px) {
   .basepage {
-    display: flex;
     gap: 6px;
     padding-inline: 0px;
     padding-block: 6px;
   }
 
   .content {
+    display: flex;
+    flex-flow: column;
     height: fit-content;
     overflow: visible;
   }

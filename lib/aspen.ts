@@ -76,7 +76,9 @@ export class AspenNavigator {
       }
 
       // Update URL after any redirect
-      logger.debug(`New URL is '${this.response.url}'`);
+      if (this.url !== this.response.url) {
+        logger.debug(`New URL is ${this.response.url}`);
+      }
       this.url = this.response.url;
     } catch (error) {
       this.handleError(error, "navigate");
@@ -105,7 +107,9 @@ export class AspenNavigator {
       ({ form: this.form, dom: this.dom } = parsePage(responseText));
 
       // Update URL after any redirect
-      logger.debug(`New URL is '${this.response.url}'`);
+      if (this.url !== this.response.url) {
+        logger.debug(`New URL is ${this.response.url}`);
+      }
       this.url = this.response.url;
     } catch (error) {
       this.handleError(error, "submit");
@@ -181,4 +185,8 @@ export async function getNavigator(): Promise<AspenNavigator | null> {
   nav.setField("org.apache.struts.taglib.html.TOKEN", session.aspenTaglib);
 
   return nav;
+}
+
+export const absenceCodes = {
+  "A": ""
 }

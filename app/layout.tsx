@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import LoginPage from "@/components/LoginPage/LoginPage";
 import { getSession } from "@/lib/session";
-import { cookies } from "next/headers";
 import "./globals.css";
 
 // Edge runtime mode for Cloudflare
@@ -28,9 +27,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieJar = await cookies();
-  const token = cookieJar.get("AsplannedToken")?.value || "";
-  if (!(token && await getSession())) {
+  if (!(await getSession())) {
     return (
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
