@@ -1,5 +1,6 @@
 .dynamicTable {
   width: 100%;
+  height: fit-content;
   --header-color: #c7c7c7;
   --row-light-color: #e0e0e0;
   --row-dark-color: #d7d7d7;
@@ -12,6 +13,12 @@
   padding-left: 8px;
   font-size: 28px;
   font-weight: bold;
+}
+
+@media (max-width: 800px) {
+  .dynamicTable caption {
+    font-size: 20px;
+  }
 }
 
 .dynamicTable th,
@@ -46,11 +53,9 @@
   font-weight: bold;
 }
 
-.actionsColumn {
-  width: 80px;
-}
-
+th.actionsColumn,
 td.actionsColumn {
+  width: 80px;
   text-align: center;
 }
 

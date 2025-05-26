@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import styles from "./DynamicTable.module.css";
 
 interface DynamicTableProps {
-  title: string;
+  title?: string;
   data: Array<Record<string, React.ReactNode>>;
   headers?: string[];
   alternatingColors?: boolean;
@@ -18,7 +18,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   title,
   data,
   headers,
-  alternatingColors = false,
+  alternatingColors = true,
   expandableRows = false,
   columnWidths = [],
   rowSpan = 1,
@@ -47,7 +47,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   return (
     <table className={styles.dynamicTable} style={{ gridRow: `span ${rowSpan}`, gridColumn: `span ${colSpan}` }}>
-      <caption>{title}</caption>
+      {title && <caption>{title}</caption>}
       <thead>
         <tr>
           {derivedHeaders.map((header, index) => (

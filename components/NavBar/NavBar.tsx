@@ -51,7 +51,7 @@ export default function NavBar() {
             height={28}
           />
         </Link>
-        <Link className={styles.mobileHomeLink} href="/">
+        <Link className={styles.mobileHomeLink} href="/home">
           <Image
             src="/asplanned-logo.svg"
             alt="AsPlanned logo"
@@ -70,7 +70,7 @@ export default function NavBar() {
         </Link>
       </div>
       <div className={`${styles.navBarGroup} ${styles.linkNavBarGroup}`} id="linkNavBarGroup">
-        <Link className={styles.homeLink} href="/">
+        <Link className={styles.homeLink} href="/home">
           <Image
             src="/asplanned-logo.svg"
             alt="AsPlanned logo"
@@ -79,7 +79,7 @@ export default function NavBar() {
           />
           <p>Home</p>
         </Link>
-        <Link href="/attendance">My Info</Link>
+        <Link href="/myInfo">My Info</Link>
         <Link href="/calendar">Calendar</Link>
         <Link href="/tools">Tools</Link>
       </div>

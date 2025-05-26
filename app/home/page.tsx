@@ -2,23 +2,20 @@ import BasePage from "@/components/BasePage/BasePage";
 import DynamicList from "@/components/DynamicList/DynamicList";
 import DynamicTable from "@/components/DynamicTable/DynamicTable";
 import { getNavigator } from "@/lib/aspen";
-import trim from "@/lib/trim";
+import { trim } from "@/lib/parsers";
 import * as cheerio from "cheerio";
 import Link from "next/link";
 import React from "react";
 
-export default async function Home() {
+const Home: React.FC = async () => {
   const aspen = await getNavigator();
 
   if (!aspen) {
     return;
   }
 
-  // Load recent activity
+  // Get recent activity widget XML
   await aspen.navigate("/studentRecentActivityWidget.do?preferences=%3C?xml%20version=%221.0%22%20encoding=%22UTF-8%22?%3E%20%3Cpreference-set%3E%20%3Cpref%20id=%22dateRange%22%20type=%22int%22%3E2%3C/pref%3E%20%3C/preference-set%3E");
-  if (!aspen.dom) {
-    throw new Error("Failed to load DOM from Aspen");
-  }
 
   // Recent activity mappings
   const activityListItems: React.ReactNode[] = aspen.dom("recent-activity *")
@@ -91,9 +88,6 @@ export default async function Home() {
 
   // Navigate to class list page
   await aspen.navigate("/portalClassList.do?navkey=academics.classes.list");
-  if (!aspen.dom) {
-    throw new Error("Failed to load DOM from Aspen");
-  }
 
   const classTableData: Array<Record<string, React.ReactNode>> = aspen.dom(".listCell.listRowHeight")
     .map((_, element) => {
@@ -113,18 +107,16 @@ export default async function Home() {
       };
     })
     .get();
-
-  // Table width stuff
-  const columnWidths = [ "auto", "80px" ];
+  
+  const classTableWidths = [ "auto", "80px" ];
 
   return (
     <BasePage>
       <DynamicTable
         title="Classes"
         data={classTableData}
-        alternatingColors={true}
         expandableRows={true}
-        columnWidths={columnWidths}
+        columnWidths={classTableWidths}
         colSpan={1}
       />
       <DynamicList
@@ -134,4 +126,6 @@ export default async function Home() {
       />
     </BasePage>
   );
-}
+};
+
+export default Home;

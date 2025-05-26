@@ -4,7 +4,7 @@ import React from "react";
 import styles from "./DynamicList.module.css";
 
 interface DynamicListProps {
-  title: string;
+  title?: string;
   items: React.ReactNode[];
   listType?: "unordered" | "ordered";
   orderedListType?: "1" | "A" | "a" | "I" | "i";
@@ -36,7 +36,7 @@ const DynamicList: React.FC<DynamicListProps> = ({
 
   return (
     <figure className={styles.dynamicList} style={{ gridRow: `span ${rowSpan}`, gridColumn: `span ${colSpan}` }}>
-      <figcaption>{title}</figcaption>
+      {title && <figcaption>{title}</figcaption>}
       {list}
     </figure>
   );

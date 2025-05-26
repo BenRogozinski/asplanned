@@ -89,6 +89,9 @@
 
 .tabContent {
   flex-grow: 1;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
   background-color: var(--container-background-color);
   padding: 4px;
   border-top-right-radius: 10px;
@@ -99,5 +102,7 @@
 @media (max-width: 800px) {
   .tabContent {
     border-top-right-radius: 0px;
+    display: flex;
+    flex-flow: column;
   }
 }

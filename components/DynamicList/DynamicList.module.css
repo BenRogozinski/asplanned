@@ -1,5 +1,6 @@
 .dynamicList {
   width: 100%;
+  height: fit-content;
   font-size: 12px;
   --list-background-color: #d7d7d7;
 }
@@ -7,6 +8,12 @@
 .dynamicList figcaption {
   font-size: 28px;
   font-weight: bold;
+}
+
+@media (max-width: 800px) {
+  .dynamicList figcaption {
+    font-size: 20px;
+  }
 }
 
 .dynamicList ul,

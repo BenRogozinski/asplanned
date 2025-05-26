@@ -42,7 +42,7 @@ export class AspenNavigator {
   public url: string;
   public response: Response | null;
   public form: Record<string, string>;
-  public dom: cheerio.CheerioAPI | null;
+  public dom: cheerio.CheerioAPI
   public jar: CookieJar;
 
   constructor(jar: CookieJar = new CookieJar()) {
@@ -50,12 +50,12 @@ export class AspenNavigator {
     this.url = this.base_url;
     this.response = null;
     this.form = {};
-    this.dom = null;
+    this.dom = cheerio.load("");
     this.jar = jar;
   }
 
   // Load page, parse form, save cookies
-  async navigate(path: string, parseDom: boolean = true): Promise<void> {
+  async navigate(path: string, parseDom: boolean = true, followRedirects: boolean = true): Promise<void> {
     this.url = this.base_url + trimPath(path);
 
     logger.debug(`Navigating to ${this.url}`);
@@ -63,7 +63,7 @@ export class AspenNavigator {
     try {
       this.response = await this.fetchWithCookies(this.url, {
         method: "GET",
-        redirect: "follow",
+        redirect: followRedirects ? "follow" : "manual",
       });
 
       if (this.response.status === 404) {

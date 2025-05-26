@@ -2,7 +2,7 @@ import { Cookie } from "tough-cookie";
 import { AspenNavigator } from "../../../../lib/aspen";
 import { z } from "zod";
 import { newSession } from "@/lib/session";
-import trim from "@/lib/trim";
+import { trim } from "@/lib/parsers";
 import { decodeImageResponse, nearestNeighborResize, encodeImageBase64 } from "@/lib/images";
 
 // Edge runtime mode for Cloudflare
