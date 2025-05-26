@@ -1,0 +1,103 @@
+.tabbedContainer {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  --container-background-color: #e0e0e0;
+  --inactive-tab-color: #d7d7d7;
+  --active-tab-color: #c7c7c7;
+}
+
+.tabbedContainer.horizontal {
+  flex-flow: column;
+}
+
+.tabbedContainer.vertical {
+  flex-flow: row;
+}
+
+.tabbedContainer h1 {
+  padding-left: 8px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.tabBar {
+  display: flex;
+}
+
+@media (max-width:800px) {
+  .tabBar {
+    background-color: var(--container-background-color);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+}
+
+.tabBar.horizontal {
+  flex-flow: row;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 800px) {
+  .tabBar.horizontal {
+    justify-content: space-between;
+  }
+}
+
+.tabBar.vertical {
+  flex-flow: column;
+}
+
+.tabBar button {
+  padding-inline: 8px;
+  padding-block: 2px;
+  background-color: var(--inactive-tab-color);
+  border: none;
+  font-weight: bold;
+  font-size: 20px;
+  text-wrap: nowrap;
+}
+
+@media (max-width: 800px) {
+  .tabBar button {
+    flex-grow: 1;
+  }
+}
+
+.tabBar button:hover,
+.tabBar button.activeTab {
+  background-color: var(--active-tab-color);
+}
+
+.tabBar button:first-child {
+  border-top-left-radius: 10px;
+}
+
+.tabBar.horizontal button:last-child {
+  border-top-right-radius: 10px;
+}
+
+@media (max-width: 800px) {
+  .tabBar.horizontal button:last-child {
+    border-top-right-radius: 0px;
+  }
+}
+
+.tabBar.vertical button:last-child {
+  border-bottom-left-radius: 10px;
+}
+
+.tabContent {
+  flex-grow: 1;
+  background-color: var(--container-background-color);
+  padding: 4px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+@media (max-width: 800px) {
+  .tabContent {
+    border-top-right-radius: 0px;
+  }
+}

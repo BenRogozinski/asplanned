@@ -46,6 +46,14 @@
   font-weight: bold;
 }
 
+.actionsColumn {
+  width: 80px;
+}
+
+td.actionsColumn {
+  text-align: center;
+}
+
 .dynamicTable button {
   background-color: var(--button-color);
   border: none;

@@ -39,7 +39,7 @@ const DynamicList: React.FC<DynamicListProps> = ({
       <figcaption>{title}</figcaption>
       {list}
     </figure>
-  )
-}
+  );
+};
 
 export default DynamicList;

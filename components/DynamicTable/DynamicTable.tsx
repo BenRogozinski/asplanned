@@ -58,7 +58,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               {header}
             </th>
           ))}
-          {expandableRows && <th style={{ width: "80px" }}>Actions</th>}
+          {expandableRows && <th className={styles.actionsColumn}>Actions</th>}
         </tr>
       </thead>
       <tbody>
@@ -77,7 +77,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 </td>
               ))}
               {expandableRows && (
-                <td style={{ width: "80px", textAlign: "center" }}>
+                <td className={styles.actionsColumn}>
                   <button onClick={() => toggleRowExpansion(rowIndex)}>
                     {expandedRows.has(rowIndex) ? "Collapse" : "Expand"}
                   </button>
