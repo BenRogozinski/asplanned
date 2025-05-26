@@ -2,7 +2,6 @@ import BasePage from "@/components/BasePage/BasePage";
 import DynamicList from "@/components/DynamicList/DynamicList";
 import DynamicTable from "@/components/DynamicTable/DynamicTable";
 import { getNavigator } from "@/lib/aspen";
-import { trim } from "@/lib/parsers";
 import * as cheerio from "cheerio";
 import Link from "next/link";
 import React from "react";
@@ -93,14 +92,14 @@ const Home: React.FC = async () => {
     .map((_, element) => {
       const $ = cheerio.load(element);
       return {
-        Name: trim($("td:nth-child(2)").text()),
-        Grade: trim($("td:nth-child(8)").text()),
+        Name: $("td:nth-child(2)").text().trim(),
+        Grade: $("td:nth-child(8)").text().trim(),
         expandedContent: (
           <React.Fragment>
-            <p><strong>Teacher:</strong> {trim($("td:nth-child(3)").text())}</p>
-            <p><strong>Classroom:</strong> {trim($("td:nth-child(7)").text())}</p>
-            <p><strong>Absences:</strong> {trim($("td:nth-child(9)").text())}</p>
-            <p><strong>Tardies:</strong> {trim($("td:nth-child(10)").text())}</p>
+            <p><strong>Teacher:</strong> {$("td:nth-child(3)").text().trim()}</p>
+            <p><strong>Classroom:</strong> {$("td:nth-child(7)").text().trim()}</p>
+            <p><strong>Absences:</strong> {$("td:nth-child(9)").text().trim()}</p>
+            <p><strong>Tardies:</strong> {$("td:nth-child(10)").text().trim()}</p>
             <Link href={`/#id=${$("td:nth-child(2)").attr("id") || ""}`}>View class</Link>
           </React.Fragment>
         )

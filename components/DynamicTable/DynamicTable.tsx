@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import styles from "./DynamicTable.module.css";
 
 interface DynamicTableProps {
-  title?: string;
+  title?: React.ReactNode;
   data: Array<Record<string, React.ReactNode>>;
   headers?: string[];
   alternatingColors?: boolean;

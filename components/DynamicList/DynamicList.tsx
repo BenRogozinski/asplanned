@@ -4,7 +4,7 @@ import React from "react";
 import styles from "./DynamicList.module.css";
 
 interface DynamicListProps {
-  title?: string;
+  title?: React.ReactNode;
   items: React.ReactNode[];
   listType?: "unordered" | "ordered";
   orderedListType?: "1" | "A" | "a" | "I" | "i";
