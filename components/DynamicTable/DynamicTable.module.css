@@ -65,6 +65,14 @@ td.actionsColumn {
   padding-inline: 6px;
   padding-block: 2px;
   border-radius: 8px;
+  color: var(--text);
+}
+
+@media (max-width: 800px) {
+  .dynamicTable button {
+    padding-inline: 8px;
+    padding-block: 4px;
+  }
 }
 
 .alternatingRow td {
