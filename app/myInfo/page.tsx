@@ -150,12 +150,12 @@ const MyInfo: React.FC = async () => {
   return (
     <BasePage>
       <TabbedContainer
-        direction="vertical"
         tabNames={["My Details", "Transcript", "Schedule", "Contacts", "Attendance", "Requests"]}
         colSpan={2}
-      >
+        >
         { /* My Details */ }
         <TabbedContainer
+          direction="vertical"
           tabNames={["Demographics", "Addresses", "Ethnicity", "Photo", "Documents"]}
           colSpan={2}
         >
