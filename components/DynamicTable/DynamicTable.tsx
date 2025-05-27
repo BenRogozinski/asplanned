@@ -24,6 +24,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   rowSpan = 1,
   colSpan = 1,
 }) => {
+  console.log(colSpan);
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
 
   // Get headers from data if not provided, excluding expandedContent

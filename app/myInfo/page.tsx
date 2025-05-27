@@ -126,44 +126,62 @@ const MyInfo: React.FC = async () => {
     .dom(".contentContainer > table:nth-child(5) > tbody:nth-child(1) > tr:nth-child(4)")
     .text()
     .trim();
-  const requestsListTitle = (
+  const requestsTableTitle = (
     <React.Fragment>
       <p>Class requests</p>
       <p style={{ fontSize: "16px" }}>{requestsText}</p>
     </React.Fragment>
   );
-  const requestsListItems = aspen
+  const requestsTableData = aspen
     .dom("#dataGrid tr.listCell")
     .map((_, element) => {
       const $ = cheerio.load(element);
-      return (
-        <strong key={_} style={{ fontSize: "18px" }}>
-          {$("td:nth-child(3)").text().trim()}
-        </strong>
-      );
+      return {
+        Class: <strong>{$("td:nth-child(3)").text().trim()}</strong>,
+        expandedContent: (
+          <React.Fragment>
+            <p><strong>Alternate 1:</strong> {$("td:nth-child(4)").text().trim()}</p>
+            <p><strong>Alternate 2:</strong> {$("td:nth-child(6)").text().trim()}</p>
+          </React.Fragment>
+        )
+      };
     })
     .get();
 
   return (
     <BasePage>
       <TabbedContainer
-        direction="horizontal"
-        tabNames={["Demographics", "Addresses", "Schedule", "Contacts", "Attendance", "Requests"]}
+        direction="vertical"
+        tabNames={["My Details", "Transcript", "Schedule", "Contacts", "Attendance", "Requests"]}
         colSpan={2}
       >
-        <DynamicTable data={demographicsTableData} colSpan={2} />
-        <React.Fragment>
-          <DynamicTable title="Physical Address" data={physicalAddressTableData} />
-          <DynamicTable title="Mailing Address" data={mailingAddressTableData} />
-        </React.Fragment>
+        { /* My Details */ }
+        <TabbedContainer
+          tabNames={["Demographics", "Addresses", "Ethnicity", "Photo", "Documents"]}
+          colSpan={2}
+        >
+          { /* Demographics */ }
+          <DynamicTable data={demographicsTableData} colSpan={2} />
+          { /* Addresses */ }
+          <React.Fragment>
+            <DynamicTable title="Physical Address" data={physicalAddressTableData} />
+            <DynamicTable title="Mailing Address" data={mailingAddressTableData} />
+          </React.Fragment>
+        </TabbedContainer>
+        { /* Transcript */ }
+        <h1>Nothing here yet!</h1>
+        { /* Schedule */ }
         {scheduleTableData.length ? (
           <DynamicTable title="Today's schedule" data={scheduleTableData} colSpan={2} />
         ) : (
           <h1>No classes scheduled for today!</h1>
         )}
+        { /* Contacts */ }
         <DynamicTable title="Contacts" data={contactsTableData} expandableRows colSpan={2} />
+        { /* Attendance */ }
         <DynamicTable title="Attendance" data={attendanceTableData} colSpan={2} />
-        <DynamicList title={requestsListTitle} items={requestsListItems} />
+        { /* Requests */ }
+        <DynamicTable title={requestsTableTitle} data={requestsTableData} expandableRows />
       </TabbedContainer>
     </BasePage>
   );
