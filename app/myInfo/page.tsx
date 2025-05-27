@@ -6,7 +6,6 @@ import { cleanSplit } from "@/lib/parsers";
 import { Metadata } from "next";
 import React from "react";
 import * as cheerio from "cheerio";
-import DynamicList from "@/components/DynamicList/DynamicList";
 
 export const metadata: Metadata = {
   title: "My Info",
