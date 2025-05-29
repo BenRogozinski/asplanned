@@ -46,7 +46,7 @@ export class AspenNavigator {
   public jar: CookieJar;
 
   constructor(jar: CookieJar = new CookieJar()) {
-    this.base_url = "https://aspen.cps.edu/aspen";
+    this.base_url = process.env.ASPEN_URL || "https://aspen.cps.edu/aspen";
     this.url = this.base_url;
     this.response = null;
     this.form = {};
@@ -173,7 +173,7 @@ export async function getNavigator(): Promise<AspenNavigator | null> {
   logger.debug("Creating navigator for current session");
 
   const jar = new CookieJar();
-  const baseUrl = "https://aspen.cps.edu/";
+  const baseUrl = process.env.ASPEN_URL || "https://aspen.cps.edu/aspen";
 
   await jar.setCookie(`AspenCookie=${session.aspenCookie}`, baseUrl);
   await jar.setCookie(`AspenCookieCORS=${session.aspenCookie}`, baseUrl);
@@ -185,8 +185,4 @@ export async function getNavigator(): Promise<AspenNavigator | null> {
   nav.setField("org.apache.struts.taglib.html.TOKEN", session.aspenTaglib);
 
   return nav;
-}
-
-export const absenceCodes = {
-  "A": ""
 }

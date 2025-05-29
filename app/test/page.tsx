@@ -1,9 +1,14 @@
 import BasePage from "@/components/BasePage/BasePage";
 import DynamicList from "@/components/DynamicList/DynamicList";
 import DynamicTable from "@/components/DynamicTable/DynamicTable";
+import { Metadata } from "next";
 import React from "react";
 
-const Home: React.FC = async () => {
+export const metadata: Metadata = {
+  title: "TESTING PAGE",
+};
+
+const MyInfo: React.FC = async () => {
   return (
     <BasePage>
       <DynamicTable
@@ -21,4 +26,4 @@ const Home: React.FC = async () => {
   );
 };
 
-export default Home;
+export default MyInfo;

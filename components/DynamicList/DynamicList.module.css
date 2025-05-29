@@ -31,3 +31,38 @@
 .dynamicList a {
   text-decoration: underline;
 }
+
+.placeholderDiv,
+.errorDiv {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+}
+
+.placeholderDiv>p,
+.errorDiv>p {
+  font-size: 28px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.errorDiv>p {
+  color: #ff4040;
+}
+
+.placeholderDiv>div,
+.errorDiv>div {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.placeholderDiv>div {
+  background-color: #d7d7d7;
+}
+
+.errorDiv>div {
+  background-color: #ff4040;
+  padding: 10px;
+}

@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import LoginPage from "@/components/LoginPage/LoginPage";
-import { getSession } from "@/lib/session";
 import "./globals.css";
 
 // Edge runtime mode for Cloudflare
@@ -27,16 +25,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  if (!(await getSession())) {
-    return (
-      <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable}`}>
-          <LoginPage />
-        </body>
-      </html>
-    );
-  }
-
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>

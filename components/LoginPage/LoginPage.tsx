@@ -28,7 +28,7 @@ export default function LoginPage() {
 
     if (response.ok) {
       setErrorMessage(null);
-      router.refresh();
+      router.push("/home");
     } else {
       const data = await response.json();
       setErrorMessage(data.error || "Unknown error");

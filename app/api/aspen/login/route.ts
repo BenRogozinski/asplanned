@@ -1,12 +1,13 @@
 import { Cookie } from "tough-cookie";
-import { AspenNavigator } from "../../../../lib/aspen";
+import { AspenNavigator } from "@/lib/aspen";
 import { z } from "zod";
 import { newSession } from "@/lib/session";
 import { trim } from "@/lib/parsers";
 import { decodeImageResponse, nearestNeighborResize, encodeImageBase64 } from "@/lib/images";
+import { jsonResponse } from "@/lib/api";
 
 // Edge runtime mode for Cloudflare
-export const runtime = 'edge';
+export const runtime = "edge";
 
 const LoginSchema = z.object({
   username: z.string().min(1).max(255),
@@ -134,12 +135,4 @@ function handleError(e: unknown): Response {
     return jsonResponse({ error: `Internal processing error: ${e.name}` }, 500);
   }
   return jsonResponse({ error: "Internal processing error" }, 500);
-}
-
-// Helper function to create JSON responses
-function jsonResponse(data: Record<string, unknown>, status: number): Response {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
 }

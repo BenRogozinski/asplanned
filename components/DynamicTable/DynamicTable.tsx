@@ -1,11 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./DynamicTable.module.css";
+
+interface CellContent {
+  content: React.ReactNode;
+}
+
+type TableRow = Record<string, CellContent | React.ReactNode>;
 
 interface DynamicTableProps {
   title?: React.ReactNode;
-  data: Array<Record<string, React.ReactNode>>;
+  data?: TableRow[];
+  dataUrl?: string;
   headers?: string[];
   alternatingColors?: boolean;
   expandableRows?: boolean;
@@ -16,7 +23,8 @@ interface DynamicTableProps {
 
 const DynamicTable: React.FC<DynamicTableProps> = ({
   title,
-  data,
+  data = [],
+  dataUrl,
   headers,
   alternatingColors = true,
   expandableRows = false,
@@ -24,15 +32,41 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   rowSpan = 1,
   colSpan = 1,
 }) => {
-  console.log(colSpan);
+  const [tableData, setTableData] = useState<TableRow[]>(data);
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+  const [loading, setLoading] = useState<boolean>(!!dataUrl);
+  const [error, setError] = useState<string | null>(null);
 
-  // Get headers from data if not provided, excluding expandedContent
+  useEffect(() => {
+    if (dataUrl) {
+      setLoading(true);
+      fetch(dataUrl)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Failed to fetch data: ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then((fetchedData) => {
+          // Assume the API returns data in the expected format
+          setTableData(fetchedData);
+          setError(null);
+        })
+        .catch((err) => {
+          setError(err.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [dataUrl]);
+
+  // Get headers from data if not provided
   const derivedHeaders =
     headers ||
     Array.from(
       new Set(
-        data.flatMap((row) => Object.keys(row).filter((key) => key !== "expandedContent"))
+        tableData.flatMap((row) => Object.keys(row).filter((key) => key !== "expandedContent"))
       )
     );
 
@@ -45,6 +79,26 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
     setExpandedRows(newExpandedRows);
   };
+
+  if (loading) {
+    return (
+      <div className={styles.placeholderDiv}>
+        <p>Loading {title}...</p>
+        <div></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.errorDiv}>
+        <p>Error</p>
+        <div>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <table className={styles.dynamicTable} style={{ gridRow: `span ${rowSpan}`, gridColumn: `span ${colSpan}` }}>
@@ -63,7 +117,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         </tr>
       </thead>
       <tbody>
-        {data.map((row, rowIndex) => (
+        {tableData.map((row, rowIndex) => (
           <React.Fragment key={rowIndex}>
             <tr
               className={
@@ -72,11 +126,23 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   : undefined
               }
             >
-              {derivedHeaders.map((header, colIndex) => (
-                <td key={colIndex} style={{ width: columnWidths[colIndex] || "auto" }}>
-                  {row[header] || ""}
-                </td>
-              ))}
+              {derivedHeaders.map((header, colIndex) => {
+                const cell = row[header];
+                if (typeof cell === "object" && cell !== null && "content" in cell) {
+                  // Render content without custom styles
+                  return (
+                    <td key={colIndex} style={{ width: columnWidths[colIndex] || "auto" }}>
+                      {cell.content}
+                    </td>
+                  );
+                }
+                // Render plain content
+                return (
+                  <td key={colIndex} style={{ width: columnWidths[colIndex] || "auto" }}>
+                    {cell || ""}
+                  </td>
+                );
+              })}
               {expandableRows && (
                 <td className={styles.actionsColumn}>
                   <button onClick={() => toggleRowExpansion(rowIndex)}>
@@ -95,7 +161,26 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               >
                 <td colSpan={derivedHeaders.length + 1}>
                   <div className={styles.expandedContent}>
-                    {row.expandedContent || "No additional data available"}
+                    {row.expandedContent && typeof row.expandedContent === "object" && !Array.isArray(row.expandedContent)
+                      ? Object.entries(row.expandedContent).map(([key, value]) => {
+                          // Check if the value is a link object with `url` and `text`
+                          if (typeof value === "object" && value !== null && "url" in value && "text" in value) {
+                            return (
+                              <p key={key}>
+                                <a href={value.url}>
+                                  {value.text}
+                                </a>
+                              </p>
+                            );
+                          }
+                          // Render as plain text if not a link object
+                          return (
+                            <p key={key}>
+                              <strong>{key}:</strong> {String(value)}
+                            </p>
+                          );
+                        })
+                      : "No additional data available"}
                   </div>
                 </td>
               </tr>
