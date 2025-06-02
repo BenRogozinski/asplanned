@@ -10,15 +10,8 @@ export default function NavBar() {
   const [pfpSource, setPfpSource] = useState("/placeholder-user.jpg");
 
   useEffect(() => {
-    // Access cookies on the client side
-    const cookies = document.cookie.split("; ").reduce((acc, cookie) => {
-      const [key, value] = cookie.split("=");
-      acc[key] = decodeURIComponent(value);
-      return acc;
-    }, {} as Record<string, string>);
-
-    const fetchedUsername = cookies["AsplannedUsername"] || "UNKNOWN";
-    const pfpBase64 = cookies["AsplannedPfp"] || null;
+    const fetchedUsername = localStorage.getItem("asplanned:username") || "UNKNOWN";
+    const pfpBase64 = localStorage.getItem("asplanned:profilePictureBase64") || null;
 
     setUsername(fetchedUsername);
     setPfpSource(pfpBase64 ? `data:image/jpg;base64,${pfpBase64}` : "/placeholder-user.jpg");

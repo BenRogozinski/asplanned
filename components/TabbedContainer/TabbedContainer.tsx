@@ -53,7 +53,18 @@ const TabbedContainer: React.FC<TabbedContainerProps> = ({
           </button>
         ))}
       </div>
-      <div className={styles.tabContent}>
+      {
+        /*
+          Keys are assigned here to avoid an apparent
+          rendering bug where data from a previously
+          rendered tab is shown in another tab instead
+          of the correct data (really weird idk).
+          The issue does not seem to occur across different
+          URL paths, so this doesn't need to be added
+          to the BasePage component.
+        */
+      }
+      <div className={styles.tabContent} key={activeTab}>
         {children[activeTab]}
       </div>
     </div>

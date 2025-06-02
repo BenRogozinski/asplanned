@@ -8,7 +8,7 @@ export function jsonResponse(data: unknown, status: number) {
 }
 
 export function unauthorizedResponse() {
-  return jsonResponse({ error: "unauthorized" }, 401);
+  return jsonResponse({ error: "Authentication failed" }, 401);
 }
 
 export function errorResponse(error: unknown, userError: boolean = false) {

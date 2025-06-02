@@ -2,7 +2,7 @@ import { createClient } from "@libsql/client";
 import { cookies } from "next/headers";
 import { Logger } from "./logger";
 
-const logger = new Logger("session");
+const logger = new Logger("Session");
 
 class SessionError extends Error {
   constructor(message: string) {
@@ -48,7 +48,7 @@ export async function newSession(aspenCookie: string, aspenSessionId: string, as
 
     return token;
   } catch {
-    throw new SessionError("Failed to create a new login session");
+    throw new SessionError("Failed to create new login session");
   }
 }
 
@@ -97,7 +97,39 @@ export async function getSession(): Promise<AspenSession | null> {
 
     return null; // Session expired or is missing information
   } catch {
-    throw null;
+    throw new SessionError("Failed to get session");
+  }
+}
+
+
+export async function deleteSession(): Promise<boolean> {
+  logger.debug("Deleting current session");
+
+  const cookieJar = await cookies();
+  const token = cookieJar.get("AsplannedToken")?.value || "";
+
+  // No token to begin with
+  if (!token) {
+    logger.debug("No token found in cookies");
+    return false;
+  }
+
+  try {
+    const result = await client.execute({
+      sql: `DELETE FROM sessions WHERE token = ?`,
+      args: [token],
+    });
+
+    // Check if any rows were affected (i.e., a session was deleted)
+    const success = result.rowsAffected > 0;
+    if (success) {
+      logger.debug("Session successfully deleted");
+    } else {
+      logger.debug("No session found to delete");
+    }
+    return success;
+  } catch {
+    throw new SessionError("Failed to delete session");
   }
 }
 

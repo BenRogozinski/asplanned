@@ -1,37 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { Logger } from "./lib/logger";
+import { unauthorizedResponse } from "./lib/api";
 
-const logger = new Logger("middleware")
+const logger = new Logger("Middleware")
 
 export async function middleware(request: NextRequest) {
   const session = await getSession();
   const { pathname } = request.nextUrl;
-  
+
   logger.debug(`Matched request to ${pathname}`);
 
   if (!session) {
-    // Return an error in-place for API routes
+    // Don't redirect for API routes, just return a 401
     if (pathname.startsWith("/api")) {
-      return NextResponse.json(
-        { Error: "Unauthorized" },
-        { status: 401, headers: { "Content-Type": "application/json" } }
-      );
+      return unauthorizedResponse();
     }
 
     // Redirect to login for regular routes
-    if (!pathname.startsWith("/login")) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // Session is valud
-  return NextResponse.next();
+  const response = NextResponse.next();
+  if (pathname.startsWith("/api")) {
+    response.headers.set("Cache-Control", "max-age=300, must-revalidate, private");
+    response.headers.set("Vary", "Cookie");
+  }
+  return response;
 }
 
 export const config = {
   matcher: [
-    "/api",
+    "/api/:path((?!auth).*)",
     "/calendar",
     "/home",
     "/myInfo",

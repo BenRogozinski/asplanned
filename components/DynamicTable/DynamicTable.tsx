@@ -3,16 +3,13 @@
 import React, { useState, useEffect } from "react";
 import styles from "./DynamicTable.module.css";
 
-interface CellContent {
-  content: React.ReactNode;
-}
-
-type TableRow = Record<string, CellContent | React.ReactNode>;
+export type TableRow = Record<string, React.ReactNode | Record<string, string>>;
 
 interface DynamicTableProps {
   title?: React.ReactNode;
   data?: TableRow[];
   dataUrl?: string;
+  multiPartKey?: string;
   headers?: string[];
   alternatingColors?: boolean;
   expandableRows?: boolean;
@@ -25,6 +22,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   title,
   data = [],
   dataUrl,
+  multiPartKey = "NOKEY",
   headers,
   alternatingColors = true,
   expandableRows = false,
@@ -43,14 +41,29 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       fetch(dataUrl)
         .then((response) => {
           if (!response.ok) {
-            throw new Error(`Failed to fetch data: ${response.statusText}`);
+            throw new Error(
+              `Failed to fetch data for "${title || "Dynamic Table"}": ${response.status} ${response.statusText}`
+            );
           }
           return response.json();
         })
         .then((fetchedData) => {
-          // Assume the API returns data in the expected format
-          setTableData(fetchedData);
-          setError(null);
+          /*
+            If the response is multipart data,
+            get the data that corresponds to
+            the multiPartKey
+          */
+            if (Array.isArray(fetchedData)) {
+              setTableData(fetchedData);
+            } else {
+              const listItems = fetchedData[multiPartKey] || null;
+              if (listItems) {
+                setTableData(listItems);
+              } else {
+                throw new Error(`Multipart data key ${multiPartKey} does not exist in API response`);
+              }
+            }
+            setError(null);
         })
         .catch((err) => {
           setError(err.message);
@@ -59,7 +72,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           setLoading(false);
         });
     }
-  }, [dataUrl]);
+  }, [dataUrl, multiPartKey, title]);
 
   // Get headers from data if not provided
   const derivedHeaders =
@@ -128,15 +141,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             >
               {derivedHeaders.map((header, colIndex) => {
                 const cell = row[header];
-                if (typeof cell === "object" && cell !== null && "content" in cell) {
-                  // Render content without custom styles
-                  return (
-                    <td key={colIndex} style={{ width: columnWidths[colIndex] || "auto" }}>
-                      {cell.content}
-                    </td>
-                  );
-                }
-                // Render plain content
                 return (
                   <td key={colIndex} style={{ width: columnWidths[colIndex] || "auto" }}>
                     {cell || ""}

@@ -17,6 +17,7 @@ interface DynamicListProps {
   title?: React.ReactNode;
   items?: (ListItem | string)[];
   dataUrl?: string;
+  multiPartKey?: string;
   listType?: "unordered" | "ordered";
   orderedListType?: "1" | "A" | "a" | "I" | "i";
   rowSpan?: number;
@@ -27,6 +28,7 @@ const DynamicList: React.FC<DynamicListProps> = ({
   title,
   items = [],
   dataUrl,
+  multiPartKey = "NOKEY",
   listType = "unordered",
   orderedListType = "1",
   rowSpan = 1,
@@ -42,13 +44,28 @@ const DynamicList: React.FC<DynamicListProps> = ({
       fetch(dataUrl)
         .then((response) => {
           if (!response.ok) {
-            throw new Error(`Failed to fetch data: ${response.statusText}`);
+            throw new Error(
+              `Failed to fetch data for "${title || "Dynamic List"}": ${response.status} ${response.statusText}`
+            );
           }
           return response.json();
         })
         .then((fetchedData) => {
-          // Assume the API returns an array of items
-          setListItems(fetchedData);
+          /*
+            If the response is multipart data,
+            get the data that corresponds to
+            the multiPartKey
+          */
+          if (Array.isArray(fetchedData)) {
+            setListItems(fetchedData);
+          } else {
+            const listItems = fetchedData[multiPartKey] || null;
+            if (listItems) {
+              setListItems(listItems);
+            } else {
+              throw new Error(`Multipart data key ${multiPartKey} does not exist in API response`);
+            }
+          }
           setError(null);
         })
         .catch((err) => {
@@ -58,7 +75,7 @@ const DynamicList: React.FC<DynamicListProps> = ({
           setLoading(false);
         });
     }
-  }, [dataUrl]);
+  }, [dataUrl, multiPartKey, title]);
 
   const renderedItems = listItems.map((item, itemIndex) => {
     if (typeof item === "string") {

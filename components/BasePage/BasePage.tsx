@@ -1,6 +1,7 @@
 import styles from "./BasePage.module.css";
 import NavBar from '../NavBar/NavBar';
 import Footer from "../Footer/Footer";
+import React from "react";
 
 export default async function BasePage({
   children

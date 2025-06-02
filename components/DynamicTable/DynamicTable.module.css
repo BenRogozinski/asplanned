@@ -1,6 +1,7 @@
 .dynamicTable {
   width: 100%;
   height: fit-content;
+  white-space: pre-wrap;
   --header-color: #c7c7c7;
   --row-light-color: #e0e0e0;
   --row-dark-color: #d7d7d7;

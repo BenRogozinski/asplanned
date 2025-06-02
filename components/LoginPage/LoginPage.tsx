@@ -18,7 +18,7 @@ export default function LoginPage() {
     const username = formData.get("username");
     const password = formData.get("password");
 
-    const response = await fetch("/api/aspen/login", {
+    const response = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -26,11 +26,14 @@ export default function LoginPage() {
 
     setThrobber(false);
 
+    const data = await response.json();
+
     if (response.ok) {
       setErrorMessage(null);
+      localStorage.setItem("asplanned:username", data.username);
+      localStorage.setItem("asplanned:profilePictureBase64", data.profilePictureBase64);
       router.push("/home");
     } else {
-      const data = await response.json();
       setErrorMessage(data.error || "Unknown error");
     }
   }
